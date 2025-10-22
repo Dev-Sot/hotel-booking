@@ -34,4 +34,30 @@
 
   <script src="script.js"></script>
 </body>
+
+<section id="reservas">
+  <h2>Reserva tu habitación</h2>
+
+  <form id="reserva-form">
+    <label>Nombre completo:</label>
+    <input type="text" id="nombre" required>
+
+    <label>Tipo de habitación:</label>
+    <select id="tipo-habitacion" required>
+      <option value="">Selecciona</option>
+      <option value="suite">Suite</option>
+      <option value="doble">Doble</option>
+      <option value="sencilla">Sencilla</option>
+    </select>
+
+    <label>Fecha de entrada:</label>
+    <input type="date" id="fecha-inicio" required>
+
+    <label>Fecha de salida:</label>
+    <input type="date" id="fecha-fin" required>
+
+    <button type="submit">Reservar</button>
+  </form>
+</section>
+
 </html>
