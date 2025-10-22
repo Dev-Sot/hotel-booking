@@ -8,7 +8,6 @@
   </head>
 
   <body class="bg-gray-50 text-gray-800">
-
     <!-- Navbar -->
     <nav class="navbar">
       <ul>
@@ -26,23 +25,34 @@
     </nav>
 
     <!-- Hero -->
-    <section class="flex flex-col items-center justify-center h-[80vh] text-center px-6">
+    <section
+      class="flex flex-col items-center justify-center h-[80vh] text-center px-6"
+    >
       <h2 class="text-4xl font-bold mb-4">Reserva tu habitación ideal</h2>
       <p class="text-lg mb-6 max-w-xl">
-        Explora las mejores opciones de alojamiento y disfruta una experiencia única con nuestro sistema de reservas.
+        Explora las mejores opciones de alojamiento y disfruta una experiencia
+        única con nuestro sistema de reservas.
       </p>
-      <a href="pages/dashboard.html" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
+      <a
+        href="pages/dashboard.html"
+        class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
+      >
         Ver habitaciones
       </a>
     </section>
 
     <!-- Sección de reservas -->
-    <section id="reservas" class="px-8 py-12 bg-white shadow-md rounded-lg max-w-lg mx-auto">
-      <h2 class="text-2xl font-semibold mb-4 text-center">Reserva tu habitación</h2>
+    <section
+      id="reservas"
+      class="px-8 py-12 bg-white shadow-md rounded-lg max-w-lg mx-auto"
+    >
+      <h2 class="text-2xl font-semibold mb-4 text-center">
+        Reserva tu habitación
+      </h2>
 
       <form id="reserva-form" class="flex flex-col gap-4">
         <label>Nombre completo:</label>
-        <input type="text" id="nombre" required class="border p-2 rounded">
+        <input type="text" id="nombre" required class="border p-2 rounded" />
 
         <label>Tipo de habitación:</label>
         <select id="tipo-habitacion" required class="border p-2 rounded">
@@ -53,17 +63,31 @@
         </select>
 
         <label>Fecha de entrada:</label>
-        <input type="date" id="fecha-inicio" required class="border p-2 rounded">
+        <input type="date" id="fecha-inicio" required class="border p-2 rounded" />
 
         <label>Fecha de salida:</label>
-        <input type="date" id="fecha-fin" required class="border p-2 rounded">
+        <input type="date" id="fecha-fin" required class="border p-2 rounded" />
 
-        <button type="submit" class="bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
+        <button
+          type="submit"
+          class="bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+        >
           Reservar
         </button>
       </form>
     </section>
 
-    <script src="script.js"></script>
+    <!-- Importar Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module">
+      // Inicializar Supabase (reemplaza con tus claves reales)
+      window.supabase = supabase.createClient(
+        "https://dcdsvbbwrqhnehbzzarr.supabase.co", // 🔹 URL del proyecto
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRjZHN2YmJ3cnFobmVoYnp6YXJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwODg4NzYsImV4cCI6MjA3NjY2NDg3Nn0.V38025qoQ9E_E8KFX9UF576ZdTYwFrz0hGQG1C00cIo" // 🔹 Clave pública (anon)
+      );
+    </script>
+
+    <!-- Tu script principal -->
+    <script type="module" src="script.js"></script>
   </body>
 </html>
