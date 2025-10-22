@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const habitaciones = [
   { id: 1, nombre: "Suite Presidencial" },
@@ -12,12 +12,33 @@ export default function ReservasPage() {
   const [habitacion, setHabitacion] = useState("");
   const [fechaEntrada, setFechaEntrada] = useState("");
   const [fechaSalida, setFechaSalida] = useState("");
+  const [error, setError] = useState("");
+  const [resumen, setResumen] = useState("");
+
+  useEffect(() => {
+    if (habitacion && fechaEntrada && fechaSalida) {
+      const entrada = new Date(fechaEntrada);
+      const salida = new Date(fechaSalida);
+
+      if (salida <= entrada) {
+        setError("La fecha de salida debe ser posterior a la fecha de entrada");
+        setResumen("");
+      } else {
+        setError("");
+        setResumen(
+          `Reserva: ${habitacion} del ${entrada.toLocaleDateString()} al ${salida.toLocaleDateString()}`
+        );
+      }
+    } else {
+      setResumen("");
+      setError("");
+    }
+  }, [habitacion, fechaEntrada, fechaSalida]);
 
   const handleReservar = (e: React.FormEvent) => {
     e.preventDefault();
-    alert(
-      `Has reservado la habitación ${habitacion} del ${fechaEntrada} al ${fechaSalida}`
-    );
+    if (error) return;
+    alert(resumen || "Complete los datos para reservar");
   };
 
   return (
@@ -28,7 +49,7 @@ export default function ReservasPage() {
 
       <form
         onSubmit={handleReservar}
-        className="bg-white p-8 rounded-2xl shadow-lg space-y-6"
+        className="bg-white p-10 rounded-3xl shadow-2xl space-y-8"
       >
         <div>
           <label className="block mb-2 font-medium text-gray-700">
@@ -37,7 +58,7 @@ export default function ReservasPage() {
           <select
             value={habitacion}
             onChange={(e) => setHabitacion(e.target.value)}
-            className="w-full border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
+            className="w-full border-gray-300 rounded-xl p-4 focus:ring-2 focus:ring-blue-500"
             required
           >
             <option value="">-- Escoge una habitación --</option>
@@ -58,7 +79,7 @@ export default function ReservasPage() {
               type="date"
               value={fechaEntrada}
               onChange={(e) => setFechaEntrada(e.target.value)}
-              className="w-full border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
+              className="w-full border-gray-300 rounded-xl p-4 focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
@@ -71,15 +92,18 @@ export default function ReservasPage() {
               type="date"
               value={fechaSalida}
               onChange={(e) => setFechaSalida(e.target.value)}
-              className="w-full border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
+              className="w-full border-gray-300 rounded-xl p-4 focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
         </div>
 
+        {error && <p className="text-red-600 font-medium">{error}</p>}
+        {resumen && <p className="text-gray-700 font-semibold">{resumen}</p>}
+
         <button
           type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-semibold text-lg transition"
         >
           Confirmar reserva
         </button>
