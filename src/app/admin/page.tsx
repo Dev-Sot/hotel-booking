@@ -1,51 +1,46 @@
-import Image from "next/image";
+"use client";
 
-const habitaciones = [
-  { id: 1, nombre: "Suite Presidencial", capacidad: 4, precio: 950000 },
-  { id: 2, nombre: "Suite Deluxe", capacidad: 3, precio: 620000 },
-  { id: 3, nombre: "Habitación Doble Ejecutiva", capacidad: 2, precio: 420000 },
-];
-
-const reservas = [
-  { id: 1, cliente: "Juan Pérez", habitacion: "Suite Presidencial", desde: "2025-10-22", hasta: "2025-10-24" },
-  { id: 2, cliente: "María López", habitacion: "Suite Deluxe", desde: "2025-10-23", hasta: "2025-10-25" },
-];
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useUser } from "@/hooks/useUser";
 
 export default function AdminPage() {
+  const { user, loading } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/login");
+    }
+  }, [user, loading, router]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-50">
+        <div className="text-gray-600">Verificando sesión...</div>
+      </div>
+    );
+  }
+
+  if (!user) return null;
+
   return (
-    <div className="max-w-7xl mx-auto px-6 py-16">
-      <h1 className="text-4xl font-bold text-center mb-12 text-gray-800">
-        Panel de Administración
-      </h1>
-
-      {/* Habitaciones */}
-      <section className="mb-16">
-        <h2 className="text-2xl font-semibold mb-6 text-gray-700">Habitaciones</h2>
-        <div className="grid md:grid-cols-3 gap-6">
-          {habitaciones.map((h) => (
-            <div key={h.id} className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-2xl transition">
-              <h3 className="text-xl font-semibold text-blue-700">{h.nombre}</h3>
-              <p>Capacidad: {h.capacidad} personas</p>
-              <p>Precio: ${h.precio.toLocaleString("es-CO")}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Reservas */}
-      <section>
-        <h2 className="text-2xl font-semibold mb-6 text-gray-700">Reservas</h2>
-        <div className="grid md:grid-cols-2 gap-6">
-          {reservas.map((r) => (
-            <div key={r.id} className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-2xl transition">
-              <h3 className="text-lg font-semibold text-gray-800">{r.cliente}</h3>
-              <p>Habitación: {r.habitacion}</p>
-              <p>Desde: {r.desde}</p>
-              <p>Hasta: {r.hasta}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+    <div className="min-h-screen bg-gray-50 p-10">
+      <h1 className="text-3xl font-bold mb-4">Bienvenido, {user.email}</h1>
+      <p className="text-gray-600 mb-8">
+        Aquí podrás gestionar las habitaciones, reservas y usuarios.
+      </p>
+      <button
+        onClick={async () => {
+          await import("@/lib/supabaseClient").then(async ({ supabase }) => {
+            await supabase.auth.signOut();
+            router.push("/login");
+          });
+        }}
+        className="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700 transition"
+      >
+        Cerrar sesión
+      </button>
     </div>
   );
 }
