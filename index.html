@@ -1,93 +1,101 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hotel Booking</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hotel Booking</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
 
-  <body class="bg-gray-50 text-gray-800">
-    <!-- Navbar -->
-    <nav class="navbar">
-      <ul>
-        <li><a href="index.html">Inicio</a></li>
-        <li><a href="#habitaciones">Habitaciones</a></li>
-        <li><a href="#servicios">Servicios</a></li>
-        <li><a href="#reservas">Reservas</a></li>
-        <li><a href="#contacto">Contacto</a></li>
-      </ul>
+  <!-- Navbar -->
+  <nav class="flex justify-between items-center px-12 py-6 shadow-md bg-white">
+    <div class="text-2xl font-bold">Hotel Booking</div>
+    <ul class="flex gap-8">
+      <li><a href="#habitaciones" class="hover:text-blue-700 transition">Habitaciones</a></li>
+      <li><a href="#servicios" class="hover:text-blue-700 transition">Servicios</a></li>
+      <li><a href="#contacto" class="hover:text-blue-700 transition">Contacto</a></li>
+    </ul>
+    <div id="auth-section">
+      <button id="login-btn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Iniciar sesión</button>
+    </div>
+  </nav>
 
-      <!-- Área dinámica para usuario -->
-      <div id="auth-section">
-        <button id="login-btn">Iniciar sesión</button>
+  <!-- Hero -->
+  <section class="flex flex-col items-center justify-center h-[80vh] text-center px-6 bg-cover bg-center" style="background-image:url('public/hero.jpg');">
+    <h1 class="text-5xl font-bold text-white drop-shadow-lg mb-4">Vive la experiencia de lujo</h1>
+    <p class="text-xl text-white mb-6 drop-shadow-md max-w-2xl">Reserva tu habitación premium y disfruta del confort que mereces.</p>
+    <button id="open-reserva" class="bg-white text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-100 transition">Reservar ahora</button>
+  </section>
+
+  <!-- Sección de habitaciones -->
+  <section id="habitaciones" class="px-12 py-20">
+    <h2 class="text-4xl font-semibold mb-12 text-center">Nuestras Habitaciones</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Ejemplo habitación -->
+      <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+        <img src="public/suite.jpg" alt="Suite" class="w-full h-64 object-cover">
+        <div class="p-6">
+          <h3 class="text-2xl font-semibold mb-2">Suite Premium</h3>
+          <p class="mb-4">Amplia habitación con vista al mar, cama king size y baño privado.</p>
+          <p class="font-bold text-lg">$250 / noche</p>
+        </div>
       </div>
-    </nav>
+      <!-- Más habitaciones -->
+    </div>
+  </section>
 
-    <!-- Hero -->
-    <section
-      class="flex flex-col items-center justify-center h-[80vh] text-center px-6"
-    >
-      <h2 class="text-4xl font-bold mb-4">Reserva tu habitación ideal</h2>
-      <p class="text-lg mb-6 max-w-xl">
-        Explora las mejores opciones de alojamiento y disfruta una experiencia
-        única con nuestro sistema de reservas.
-      </p>
-      <a
-        href="pages/dashboard.html"
-        class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
-      >
-        Ver habitaciones
-      </a>
-    </section>
+  <!-- Sección servicios -->
+  <section id="servicios" class="px-12 py-20 bg-gray-100">
+    <h2 class="text-4xl font-semibold mb-12 text-center">Servicios</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="p-6 bg-white shadow-md rounded-lg text-center">
+        <h3 class="font-semibold mb-2">Spa & Wellness</h3>
+        <p>Relájate y disfruta de tratamientos exclusivos.</p>
+      </div>
+      <div class="p-6 bg-white shadow-md rounded-lg text-center">
+        <h3 class="font-semibold mb-2">Gastronomía</h3>
+        <p>Restaurantes de alta cocina con chefs internacionales.</p>
+      </div>
+      <div class="p-6 bg-white shadow-md rounded-lg text-center">
+        <h3 class="font-semibold mb-2">Piscina & Gym</h3>
+        <p>Instalaciones de primera clase para tu bienestar.</p>
+      </div>
+    </div>
+  </section>
 
-    <!-- Sección de reservas -->
-    <section
-      id="reservas"
-      class="px-8 py-12 bg-white shadow-md rounded-lg max-w-lg mx-auto"
-    >
-      <h2 class="text-2xl font-semibold mb-4 text-center">
-        Reserva tu habitación
-      </h2>
+  <!-- Sección contacto -->
+  <section id="contacto" class="px-12 py-20">
+    <h2 class="text-4xl font-semibold mb-8 text-center">Contacto</h2>
+    <p class="text-center max-w-xl mx-auto mb-6">Para reservas o consultas, escríbenos y te responderemos rápidamente.</p>
+    <form class="max-w-xl mx-auto flex flex-col gap-4">
+      <input type="text" placeholder="Nombre completo" class="border p-3 rounded">
+      <input type="email" placeholder="Correo electrónico" class="border p-3 rounded">
+      <textarea placeholder="Mensaje" class="border p-3 rounded"></textarea>
+      <button class="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 transition">Enviar</button>
+    </form>
+  </section>
 
+  <!-- Modal de reservas -->
+  <div id="reserva-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white p-8 rounded-lg w-full max-w-md relative">
+      <button id="close-modal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">&times;</button>
+      <h2 class="text-2xl font-semibold mb-6">Reserva tu habitación</h2>
       <form id="reserva-form" class="flex flex-col gap-4">
-        <label>Nombre completo:</label>
-        <input type="text" id="nombre" required class="border p-2 rounded" />
-
-        <label>Tipo de habitación:</label>
-        <select id="tipo-habitacion" required class="border p-2 rounded">
-          <option value="">Selecciona</option>
-          <option value="suite">Suite</option>
+        <input type="text" id="nombre" placeholder="Nombre completo" class="border p-2 rounded" required>
+        <select id="tipo-habitacion" class="border p-2 rounded" required>
+          <option value="">Selecciona habitación</option>
+          <option value="suite">Suite Premium</option>
           <option value="doble">Doble</option>
           <option value="sencilla">Sencilla</option>
         </select>
-
-        <label>Fecha de entrada:</label>
-        <input type="date" id="fecha-inicio" required class="border p-2 rounded" />
-
-        <label>Fecha de salida:</label>
-        <input type="date" id="fecha-fin" required class="border p-2 rounded" />
-
-        <button
-          type="submit"
-          class="bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
-        >
-          Reservar
-        </button>
+        <input type="date" id="fecha-inicio" class="border p-2 rounded" required>
+        <input type="date" id="fecha-fin" class="border p-2 rounded" required>
+        <button type="submit" class="bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Confirmar reserva</button>
       </form>
-    </section>
+    </div>
+  </div>
 
-    <!-- Importar Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script type="module">
-      // Inicializar Supabase (reemplaza con tus claves reales)
-      window.supabase = supabase.createClient(
-        "https://dcdsvbbwrqhnehbzzarr.supabase.co", // 🔹 URL del proyecto
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRjZHN2YmJ3cnFobmVoYnp6YXJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwODg4NzYsImV4cCI6MjA3NjY2NDg3Nn0.V38025qoQ9E_E8KFX9UF576ZdTYwFrz0hGQG1C00cIo" // 🔹 Clave pública (anon)
-      );
-    </script>
-
-    <!-- Tu script principal -->
-    <script type="module" src="script.js"></script>
-  </body>
+  <script type="module" src="script.js"></script>
+</body>
 </html>
