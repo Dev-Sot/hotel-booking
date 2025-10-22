@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import ModalReserva from "./components/ModalReserva";
+import Navbar from "./components/Navbar";
+
 
 export default function Home() {
   const [openReserva, setOpenReserva] = useState(false);
@@ -58,6 +60,9 @@ export default function Home() {
 
         {/* subtle bottom fade */}
         <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-black/60 to-transparent" />
+        <Navbar />
+
+
       </header>
 
       <main className="bg-[#06070a]">
