@@ -3,30 +3,25 @@
 import { supabase } from "@/lib/supabaseClient";
 
 export default function LoginPage() {
-  const handleGoogleLogin = async () => {
+  const handleLoginGoogle = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: "http://localhost:3000/", // redirige al home después del login
+        redirectTo: window.location.origin + "/admin",
       },
     });
-
-    if (error) {
-      console.error("Error en el login:", error.message);
-      alert("Hubo un error al iniciar sesión.");
-    }
+    if (error) alert("Error al iniciar sesión: " + error.message);
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="p-8 bg-white shadow-lg rounded-xl text-center space-y-4">
-        <h1 className="text-2xl font-bold text-gray-800">Hotel Booking</h1>
-        <p className="text-gray-600">Inicia sesión para continuar</p>
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <div className="bg-white p-12 rounded-3xl shadow-2xl text-center max-w-md w-full">
+        <h1 className="text-3xl font-bold mb-6">Inicia sesión</h1>
         <button
-          onClick={handleGoogleLogin}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg transition-all"
+          onClick={handleLoginGoogle}
+          className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-semibold transition"
         >
-          Iniciar sesión con Google
+          Continuar con Google
         </button>
       </div>
     </div>
