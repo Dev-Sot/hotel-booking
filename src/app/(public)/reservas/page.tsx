@@ -2,10 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { useAuthContext } from "@/context";
-import { useReserva } from "@/hooks";
 import Navbar from "@/components/shared/Navbar";
-import AuthGuard from "@/components/shared/AuthGuard";
 
 interface Reserva {
   id: string;
@@ -19,54 +16,51 @@ interface Reserva {
 }
 
 export default function ReservasPage() {
-  const { user, loading: authLoading } = useAuthContext();
   const [reservas, setReservas] = useState<Reserva[]>([]);
   const [loadingReservas, setLoadingReservas] = useState(true);
 
   // Simulación de reservas (en producción, vendrían del API)
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (user) {
-        // Simulamos reservas del usuario
-        const mockReservas: Reserva[] = [
-          {
-            id: "res-001",
-            habitacion: "Suite Presidencial",
-            fechaInicio: "2025-12-20",
-            fechaFin: "2025-12-25",
-            estado: "confirmada",
-            precio: 950,
-            noches: 5,
-            createdAt: "2025-11-10",
-          },
-          {
-            id: "res-002",
-            habitacion: "Suite Deluxe",
-            fechaInicio: "2025-11-25",
-            fechaFin: "2025-11-28",
-            estado: "pendiente",
-            precio: 620,
-            noches: 3,
-            createdAt: "2025-11-14",
-          },
-          {
-            id: "res-003",
-            habitacion: "Doble Ejecutiva",
-            fechaInicio: "2025-01-10",
-            fechaFin: "2025-01-15",
-            estado: "confirmada",
-            precio: 420,
-            noches: 5,
-            createdAt: "2025-11-01",
-          },
-        ];
-        setReservas(mockReservas);
-      }
+      // Simulamos reservas del usuario
+      const mockReservas: Reserva[] = [
+        {
+          id: "res-001",
+          habitacion: "Suite Presidencial",
+          fechaInicio: "2025-12-20",
+          fechaFin: "2025-12-25",
+          estado: "confirmada",
+          precio: 950,
+          noches: 5,
+          createdAt: "2025-11-10",
+        },
+        {
+          id: "res-002",
+          habitacion: "Suite Deluxe",
+          fechaInicio: "2025-11-25",
+          fechaFin: "2025-11-28",
+          estado: "pendiente",
+          precio: 620,
+          noches: 3,
+          createdAt: "2025-11-14",
+        },
+        {
+          id: "res-003",
+          habitacion: "Doble Ejecutiva",
+          fechaInicio: "2025-01-10",
+          fechaFin: "2025-01-15",
+          estado: "confirmada",
+          precio: 420,
+          noches: 5,
+          createdAt: "2025-11-01",
+        },
+      ];
+      setReservas(mockReservas);
       setLoadingReservas(false);
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [user]);
+  }, []);
 
   const getStatusColor = (estado: string) => {
     switch (estado) {
@@ -94,7 +88,7 @@ export default function ReservasPage() {
     }
   };
 
-  if (authLoading || loadingReservas) {
+  if (loadingReservas) {
     return (
       <div className="min-h-screen bg-[#06070a] text-white flex items-center justify-center">
         <Navbar />
@@ -109,24 +103,23 @@ export default function ReservasPage() {
   }
 
   return (
-    <AuthGuard>
-      <div className="min-h-screen bg-[#06070a] text-white">
-        <Navbar />
+    <div className="min-h-screen bg-[#06070a] text-white">
+      <Navbar />
 
-        <main className="pt-20">
-          {/* Header */}
-          <section className="max-w-6xl mx-auto px-6 py-16">
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              <h1 className="text-5xl font-bold mb-2">Mis Reservas</h1>
-              <p className="text-xl text-gray-400">
-                {user?.email && `Reservas de ${user.email}`}
-              </p>
-            </motion.div>
-          </section>
+      <main className="pt-20">
+        {/* Header */}
+        <section className="max-w-6xl mx-auto px-6 py-16">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <h1 className="text-5xl font-bold mb-2">Mis Reservas</h1>
+            <p className="text-xl text-gray-400">
+              Aquí puedes ver y gestionar todas tus reservas
+            </p>
+          </motion.div>
+        </section>
 
           {/* Reservas List */}
           <section className="max-w-6xl mx-auto px-6 pb-20">
@@ -281,6 +274,5 @@ export default function ReservasPage() {
           </section>
         </main>
       </div>
-    </AuthGuard>
-  );
+    );
 }
