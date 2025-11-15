@@ -2,16 +2,21 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuthContext } from "@/context";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const { user, loading, logout } = useAuthContext();
 
-  if (typeof window !== "undefined") {
-    window.addEventListener("scroll", () => {
+  useEffect(() => {
+    const handleScroll = () => {
       setScrolled(window.scrollY > 40);
-    });
-  }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const links = [
     { href: "/", label: "Inicio" },
@@ -20,6 +25,11 @@ export default function Navbar() {
     { href: "/reservas", label: "Reservas" },
     { href: "/contacto", label: "Contacto" },
   ];
+
+  const handleLogout = async () => {
+    await logout();
+    setMenuOpen(false);
+  };
 
   return (
     <motion.nav
@@ -52,14 +62,66 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* Botón de login */}
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="ml-6 bg-amber-500/95 hover:bg-amber-500 text-gray-900 px-4 py-2 rounded-lg font-medium transition hidden md:block"
-        >
-          Iniciar sesión
-        </motion.button>
+        {/* Auth Section */}
+        <div className="ml-6 hidden md:flex items-center gap-4">
+          {loading ? (
+            <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-amber-500"></div>
+          ) : user ? (
+            // Usuario autenticado
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="relative"
+            >
+              <button
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="flex items-center gap-2 bg-amber-600/20 hover:bg-amber-600/40 text-amber-300 px-4 py-2 rounded-lg font-medium transition border border-amber-500/30"
+              >
+                <span className="text-xl">👤</span>
+                <span className="text-sm truncate max-w-[150px]">
+                  {user.nombre || user.email?.split("@")[0] || "Usuario"}
+                </span>
+                <span className="text-xs">▼</span>
+              </button>
+
+              {/* Dropdown Menu */}
+              {menuOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="absolute top-full right-0 mt-2 bg-black/95 border border-amber-500/30 rounded-lg shadow-lg overflow-hidden min-w-[200px]"
+                >
+                  <div className="p-3 border-b border-amber-500/20">
+                    <p className="text-xs text-gray-400">Conectado como</p>
+                    <p className="text-sm text-white font-semibold truncate">
+                      {user.nombre || user.email}
+                    </p>
+                  </div>
+                  <Link
+                    href="/reservas"
+                    className="block px-4 py-2 text-sm text-gray-300 hover:bg-amber-500/20 hover:text-white transition"
+                  >
+                    📋 Mis Reservas
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left px-4 py-2 text-sm text-red-300 hover:bg-red-500/20 hover:text-red-200 transition"
+                  >
+                    🚪 Cerrar Sesión
+                  </button>
+                </motion.div>
+              )}
+            </motion.div>
+          ) : (
+            // Sin autenticar
+            <Link
+              href="/login"
+              className="bg-amber-500/95 hover:bg-amber-500 text-gray-900 px-4 py-2 rounded-lg font-medium transition transform hover:scale-105"
+            >
+              Iniciar sesión
+            </Link>
+          )}
+        </div>
       </div>
     </motion.nav>
   );
