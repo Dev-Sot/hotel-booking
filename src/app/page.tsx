@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import ModalReserva from "./components/ModalReserva";
-import Navbar from "./components/shared/Navbar";
+import ReservaForm from "@/components/forms/ReservaForm";
+import Navbar from "@/components/shared/Navbar";
 
 
 export default function Home() {
@@ -209,8 +209,8 @@ export default function Home() {
         </footer>
       </main>
 
-      {/* ModalReserva: componente ya existente */}
-      <ModalReserva open={openReserva} onClose={() => setOpenReserva(false)} />
+      {/* ReservaForm: componente movido a src/components/forms */}
+      <ReservaForm open={openReserva} onClose={() => setOpenReserva(false)} />
     </div>
   );
 }
