@@ -1,15 +1,5 @@
-import { ReactNode } from "react";
 import { motion } from "framer-motion";
-
-interface ButtonProps {
-  children: ReactNode;
-  onClick?: () => void;
-  type?: "button" | "submit" | "reset";
-  variant?: "primary" | "secondary" | "danger";
-  disabled?: boolean;
-  fullWidth?: boolean;
-  className?: string;
-}
+import { ButtonProps } from "@/types";
 
 export default function Button({
   children,

@@ -1,13 +1,6 @@
 "use client";
-import { ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
-interface ModalProps {
-  open: boolean;
-  onClose: () => void;
-  title?: string;
-  children: ReactNode;
-}
+import { ModalProps } from "@/types";
 
 export default function Modal({ open, onClose, title, children }: ModalProps) {
   return (

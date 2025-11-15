@@ -4,11 +4,7 @@ import { supabase } from "@/lib/supabaseClient";
 import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
-
-interface LoginFormProps {
-  open: boolean;
-  onClose: () => void;
-}
+import { LoginFormProps } from "@/types";
 
 export default function LoginForm({ open, onClose }: LoginFormProps) {
   const [email, setEmail] = useState("");

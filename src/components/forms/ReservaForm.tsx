@@ -4,11 +4,7 @@ import { motion } from "framer-motion";
 import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
-
-interface ReservaFormProps {
-  open: boolean;
-  onClose: () => void;
-}
+import { ReservaFormProps } from "@/types";
 
 export default function ReservaForm({ open, onClose }: ReservaFormProps) {
   const [nombre, setNombre] = useState("");
