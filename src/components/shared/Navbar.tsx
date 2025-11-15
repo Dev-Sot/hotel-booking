@@ -113,13 +113,61 @@ export default function Navbar() {
               )}
             </motion.div>
           ) : (
-            // Sin autenticar
-            <Link
-              href="/login"
-              className="bg-amber-500/95 hover:bg-amber-500 text-gray-900 px-4 py-2 rounded-lg font-medium transition transform hover:scale-105"
-            >
-              Iniciar sesión
-            </Link>
+            // Sin autenticar: mostrar botón que abre un dropdown con opciones
+            <div className="relative">
+              <button
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="bg-amber-500/95 hover:bg-amber-500 text-gray-900 px-4 py-2 rounded-lg font-medium transition transform hover:scale-105"
+              >
+                Iniciar sesión
+              </button>
+
+              {menuOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="absolute top-full right-0 mt-2 w-72 bg-white text-black rounded-lg shadow-lg overflow-hidden border"
+                >
+                  <div className="p-4">
+                    <button
+                      onClick={() => {
+                        setMenuOpen(false);
+                        // navegar a la página de login
+                        window.location.href = "/login";
+                      }}
+                      className="w-full text-left px-4 py-3 mb-2 bg-sky-50 hover:bg-sky-100 rounded-md"
+                    >
+                      Iniciar sesión
+                    </button>
+
+                    <Link
+                      href="/register"
+                      onClick={() => setMenuOpen(false)}
+                      className="block px-4 py-3 mb-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md"
+                    >
+                      Registrarse gratis
+                    </Link>
+
+                    <div className="mt-2 border-t pt-2">
+                      <Link
+                        href="/reservas"
+                        onClick={() => setMenuOpen(false)}
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md"
+                      >
+                        Mis reservas
+                      </Link>
+                      <Link
+                        href="/contacto"
+                        onClick={() => setMenuOpen(false)}
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md"
+                      >
+                        Asistencia y ayuda
+                      </Link>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </div>
           )}
         </div>
       </div>
