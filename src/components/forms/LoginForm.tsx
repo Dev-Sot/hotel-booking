@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { signInWithGoogle, sendMagicLink } from "@/lib/api";
 import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
@@ -11,24 +11,22 @@ export default function LoginForm({ open, onClose }: LoginFormProps) {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const signInWithGoogle = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: window.location.origin },
-    });
-    if (error) setError(error.message);
+  const handleSignInWithGoogle = async () => {
+    const result = await signInWithGoogle(window.location.origin);
+    if (!result.success) setError(result.error || "Error al iniciar sesión");
   };
 
-  const sendMagicLink = async (e: React.FormEvent) => {
+  const handleSendMagicLink = async (e: React.FormEvent) => {
     e.preventDefault();
     setSending(true);
     setError(null);
-    const { error } = await supabase.auth.signInWithOtp({ email });
+    const result = await sendMagicLink(email);
     setSending(false);
-    if (error) setError(error.message);
-    else {
+    if (result.success) {
       alert("Revisa tu correo para completar el acceso (magic link).");
       onClose();
+    } else {
+      setError(result.error || "Error al enviar enlace");
     }
   };
 
@@ -39,13 +37,13 @@ export default function LoginForm({ open, onClose }: LoginFormProps) {
       </p>
 
       <div className="space-y-3">
-        <Button onClick={signInWithGoogle} fullWidth>
+        <Button onClick={handleSignInWithGoogle} fullWidth>
           Continuar con Google
         </Button>
 
         <div className="text-center text-sm text-gray-500">o</div>
 
-        <form onSubmit={sendMagicLink} className="space-y-2">
+        <form onSubmit={handleSendMagicLink} className="space-y-2">
           <Input
             type="email"
             required

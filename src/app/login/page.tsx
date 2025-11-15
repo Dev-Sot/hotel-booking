@@ -1,16 +1,11 @@
 "use client";
 
-import { supabase } from "@/lib/supabaseClient";
+import { signInWithGoogle } from "@/lib/api";
 
 export default function LoginPage() {
   const handleLoginGoogle = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: window.location.origin + "/admin",
-      },
-    });
-    if (error) alert("Error al iniciar sesión: " + error.message);
+    const result = await signInWithGoogle(window.location.origin + "/admin");
+    if (!result.success) alert("Error al iniciar sesión: " + result.error);
   };
 
   return (
