@@ -18,6 +18,7 @@ interface Reserva {
 export default function ReservasPage() {
   const [reservas, setReservas] = useState<Reserva[]>([]);
   const [loadingReservas, setLoadingReservas] = useState(true);
+  const [modalActivo, setModalActivo] = useState<{ tipo: "detalles" | "modificar" | "cancelar"; reserva: Reserva } | null>(null);
 
   // Simulación de reservas (en producción, vendrían del API)
   useEffect(() => {
@@ -206,19 +207,36 @@ export default function ReservasPage() {
                     </div>
 
                     {/* Acciones */}
-                    <div className="mt-6 pt-6 border-t border-white/10 flex gap-3 justify-end">
+                    <div className="mt-6 pt-6 border-t border-white/10 flex gap-3 justify-end flex-wrap">
                       {reserva.estado === "confirmada" && (
                         <>
-                          <button className="px-4 py-2 text-sm font-medium rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 transition">
-                            Modificar
+                          <button 
+                            onClick={() => setModalActivo({ tipo: "modificar", reserva })}
+                            className="px-6 py-2 text-sm font-semibold rounded-lg bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+                          >
+                            ✏️ Modificar
                           </button>
-                          <button className="px-4 py-2 text-sm font-medium rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-300 transition">
-                            Cancelar
+                          <button 
+                            onClick={() => setModalActivo({ tipo: "cancelar", reserva })}
+                            className="px-6 py-2 text-sm font-semibold rounded-lg bg-red-600 hover:bg-red-700 text-white shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+                          >
+                            🗑️ Cancelar
                           </button>
                         </>
                       )}
-                      <button className="px-4 py-2 text-sm font-medium rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 transition">
-                        Detalles
+                      {reserva.estado === "pendiente" && (
+                        <button 
+                          onClick={() => setModalActivo({ tipo: "cancelar", reserva })}
+                          className="px-6 py-2 text-sm font-semibold rounded-lg bg-red-600 hover:bg-red-700 text-white shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+                        >
+                          🗑️ Cancelar
+                        </button>
+                      )}
+                      <button 
+                        onClick={() => setModalActivo({ tipo: "detalles", reserva })}
+                        className="px-6 py-2 text-sm font-semibold rounded-lg bg-amber-600 hover:bg-amber-700 text-white shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+                      >
+                        👁️ Detalles
                       </button>
                     </div>
                   </motion.article>
@@ -273,6 +291,137 @@ export default function ReservasPage() {
             </div>
           </section>
         </main>
+
+        {/* Modal */}
+        {modalActivo && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
+            onClick={() => setModalActivo(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-[#1a1a1a] rounded-2xl p-8 max-w-md w-full border border-amber-500/30 shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Detalles */}
+              {modalActivo.tipo === "detalles" && (
+                <>
+                  <h2 className="text-2xl font-bold text-white mb-6">📋 Detalles de la Reserva</h2>
+                  <div className="space-y-4 mb-6">
+                    <div>
+                      <p className="text-gray-400 text-sm">Habitación</p>
+                      <p className="text-white font-semibold">{modalActivo.reserva.habitacion}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-400 text-sm">Fechas</p>
+                      <p className="text-white font-semibold">
+                        {new Date(modalActivo.reserva.fechaInicio).toLocaleDateString("es-ES")} a{" "}
+                        {new Date(modalActivo.reserva.fechaFin).toLocaleDateString("es-ES")}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-400 text-sm">Duración</p>
+                      <p className="text-white font-semibold">{modalActivo.reserva.noches} noches</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-400 text-sm">Precio por noche</p>
+                      <p className="text-amber-400 font-semibold">${modalActivo.reserva.precio}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-400 text-sm">Total</p>
+                      <p className="text-amber-400 font-bold text-lg">
+                        ${modalActivo.reserva.precio * modalActivo.reserva.noches}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-400 text-sm">Estado</p>
+                      <p className="text-white font-semibold">{getStatusLabel(modalActivo.reserva.estado)}</p>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* Modificar */}
+              {modalActivo.tipo === "modificar" && (
+                <>
+                  <h2 className="text-2xl font-bold text-white mb-6">✏️ Modificar Reserva</h2>
+                  <p className="text-gray-300 mb-6">
+                    Para modificar tu reserva, por favor contacta al equipo de soporte. Podemos ayudarte a cambiar fechas o habitación.
+                  </p>
+                  <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 mb-6">
+                    <p className="text-blue-300 text-sm">
+                      📞 Teléfono: +1 (555) 123-4567<br />
+                      📧 Email: reservas@hotelcolina.com
+                    </p>
+                  </div>
+                </>
+              )}
+
+              {/* Cancelar */}
+              {modalActivo.tipo === "cancelar" && (
+                <>
+                  <h2 className="text-2xl font-bold text-white mb-6">🗑️ Cancelar Reserva</h2>
+                  <p className="text-gray-300 mb-4">
+                    ¿Estás seguro de que deseas cancelar esta reserva?
+                  </p>
+                  <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 mb-6">
+                    <p className="text-red-300 text-sm">
+                      <strong>Aviso:</strong> La cancelación se procesará según nuestra política de cancelación. Se retendrá un cargo administrativo.
+                    </p>
+                  </div>
+                  <p className="text-gray-400 text-sm mb-6">
+                    Habitación: <strong className="text-white">{modalActivo.reserva.habitacion}</strong><br />
+                    Monto a reembolsar: <strong className="text-amber-400">
+                      ${Math.floor(modalActivo.reserva.precio * modalActivo.reserva.noches * 0.9)}
+                    </strong>
+                  </p>
+                </>
+              )}
+
+              {/* Botones */}
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={() => setModalActivo(null)}
+                  className="px-6 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white font-semibold transition"
+                >
+                  Atrás
+                </button>
+                {modalActivo.tipo !== "detalles" && (
+                  <button
+                    onClick={() => {
+                      alert(
+                        modalActivo.tipo === "modificar"
+                          ? "Solicitud de modificación enviada. Te contactaremos pronto."
+                          : "Reserva cancelada exitosamente. Se procesará el reembolso en 5-7 días."
+                      );
+                      setModalActivo(null);
+                    }}
+                    className={`px-6 py-2 rounded-lg font-semibold transition text-white ${
+                      modalActivo.tipo === "cancelar"
+                        ? "bg-red-600 hover:bg-red-700"
+                        : "bg-blue-600 hover:bg-blue-700"
+                    }`}
+                  >
+                    {modalActivo.tipo === "cancelar" ? "Confirmar Cancelación" : "Solicitar Modificación"}
+                  </button>
+                )}
+                {modalActivo.tipo === "detalles" && (
+                  <button
+                    onClick={() => setModalActivo(null)}
+                    className="px-6 py-2 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-semibold transition"
+                  >
+                    Cerrar
+                  </button>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
       </div>
     );
 }
