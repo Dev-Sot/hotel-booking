@@ -16,3 +16,16 @@ Gracias por querer contribuir a este proyecto. Sigue estos pasos para que tus ca
    - Cómo probarlo localmente
 
 Para cambios grandes, abre un issue primero para discutir el diseño.
+
+## Convención de commits
+
+Usamos prefijos para identificar el tipo de cambio:
+
+| Prefijo | Uso |
+|---------|-----|
+| `feat:` | Nueva funcionalidad |
+| `fix:` | Corrección de errores |
+| `docs:` | Cambios en documentación |
+| `style:` | Formato, espacios, sin cambios de lógica |
+| `refactor:` | Refactorización de código |
+| `test:` | Añadir o modificar tests |
