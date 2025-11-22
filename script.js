@@ -1,9 +1,10 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-// Inicializa Supabase
+// Configuración de Supabase
 const supabaseUrl = "https://dcdsvbbwrqhnehbzzarr.supabase.co";
 const supabaseKey ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRjZHN2YmJ3cnFobmVoYnp6YXJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwODg4NzYsImV4cCI6MjA3NjY2NDg3Nn0.V38025qoQ9E_E8KFX9UF576ZdTYwFrz0hGQG1C00cIo";
 const supabase = createClient(supabaseUrl, supabaseKey);
+
 
 // Elementos del DOM
 const authSection = document.getElementById("auth-section");
@@ -14,7 +15,10 @@ const modal = document.getElementById("reserva-modal");
 const closeModalBtn = document.getElementById("close-modal");
 const reservaForm = document.getElementById("reserva-form");
 
-// --- Función para verificar sesión ---
+// Autenticación
+/**
+ * Verifica si hay un usuario logueado y actualiza la UI
+ */
 async function checkUser() {
   const { data } = await supabase.auth.getUser();
   const user = data?.user;
@@ -38,7 +42,9 @@ async function checkUser() {
   }
 }
 
-// --- Función login Google ---
+/**
+ * Inicia sesión con Google OAuth
+ */
 async function signInWithGoogle() {
   const { error } = await supabase.auth.signInWithOAuth({
     provider: "google",
@@ -47,7 +53,7 @@ async function signInWithGoogle() {
   if (error) console.error("Error al iniciar sesión:", error.message);
 }
 
-// --- Manejo modal ---
+// Modal de Reservas
 openModalBtn.addEventListener("click", async () => {
   const { data } = await supabase.auth.getUser();
   if (!data?.user) {
@@ -61,7 +67,16 @@ closeModalBtn.addEventListener("click", () => {
   modal.classList.add("hidden");
 });
 
-// --- Manejo formulario de reservas ---
+// Formulario de Reservas
+/**
+ * Valida que la fecha de fin sea posterior a la fecha de inicio
+ */
+function validarFechas(fechaInicio, fechaFin) {
+  const inicio = new Date(fechaInicio);
+  const fin = new Date(fechaFin);
+  return fin > inicio;
+}
+
 reservaForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -77,11 +92,17 @@ reservaForm.addEventListener("submit", async (e) => {
   const fechaInicio = document.getElementById("fecha-inicio").value;
   const fechaFin = document.getElementById("fecha-fin").value;
 
+  // Validar que las fechas sean correctas
+  if (!validarFechas(fechaInicio, fechaFin)) {
+    alert("⚠️ La fecha de salida debe ser posterior a la fecha de entrada.");
+    return;
+  }
+
   // Simulación de confirmación (luego se guardará en Supabase)
   alert(`Reserva confirmada para ${nombre} (${tipo}) del ${fechaInicio} al ${fechaFin}`);
   reservaForm.reset();
   modal.classList.add("hidden");
 });
 
-// --- Inicialización ---
+// Inicialización
 checkUser();
