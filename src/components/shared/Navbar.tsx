@@ -140,14 +140,6 @@ export default function Navbar() {
                       Iniciar sesión
                     </button>
 
-                    <Link
-                      href="/register"
-                      onClick={() => setMenuOpen(false)}
-                      className="block px-4 py-3 mb-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md"
-                    >
-                      Registrarse gratis
-                    </Link>
-
                     <div className="mt-2 border-t pt-2">
                       <Link
                         href="/reservas"
