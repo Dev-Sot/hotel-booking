@@ -75,10 +75,10 @@ export default function Navbar() {
             >
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
-                className="flex items-center gap-2 bg-amber-600/20 hover:bg-amber-600/40 text-amber-300 px-4 py-2 rounded-lg font-medium transition border border-amber-500/30"
+                className="flex items-center gap-3 bg-amber-500/90 hover:bg-amber-500 text-gray-900 px-5 py-2.5 rounded-lg font-semibold transition shadow-lg border-2 border-amber-400"
               >
                 <span className="text-xl">👤</span>
-                <span className="text-sm truncate max-w-[150px]">
+                <span className="text-sm font-bold truncate max-w-[150px]">
                   {user.nombre || user.email?.split("@")[0] || "Usuario"}
                 </span>
                 <span className="text-xs">▼</span>
