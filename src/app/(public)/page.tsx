@@ -89,7 +89,7 @@ export default function Home() {
                 title: "Suite Deluxe",
                 desc: "Diseño contemporáneo, balcón y servicios premium.",
                 price: 620,
-                img: "https://images.unsplash.com/photo-1501117716987-c8e5b1f1d4e4?auto=format&fit=crop&w=1400&q=80",
+                img: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1400&q=80",
               },
               {
                 title: "Doble Ejecutiva",
