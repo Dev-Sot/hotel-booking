@@ -214,13 +214,13 @@ export default function ReservasPage() {
                             onClick={() => setModalActivo({ tipo: "modificar", reserva })}
                             className="px-6 py-2 text-sm font-semibold rounded-lg bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
                           >
-                            ✏️ Modificar
+                             Modificar
                           </button>
                           <button 
                             onClick={() => setModalActivo({ tipo: "cancelar", reserva })}
                             className="px-6 py-2 text-sm font-semibold rounded-lg bg-red-600 hover:bg-red-700 text-white shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
                           >
-                            🗑️ Cancelar
+                             Cancelar
                           </button>
                         </>
                       )}
@@ -229,14 +229,14 @@ export default function ReservasPage() {
                           onClick={() => setModalActivo({ tipo: "cancelar", reserva })}
                           className="px-6 py-2 text-sm font-semibold rounded-lg bg-red-600 hover:bg-red-700 text-white shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
                         >
-                          🗑️ Cancelar
+                           Cancelar
                         </button>
                       )}
                       <button 
                         onClick={() => setModalActivo({ tipo: "detalles", reserva })}
                         className="px-6 py-2 text-sm font-semibold rounded-lg bg-amber-600 hover:bg-amber-700 text-white shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
                       >
-                        👁️ Detalles
+                         Detalles
                       </button>
                     </div>
                   </motion.article>
@@ -311,7 +311,7 @@ export default function ReservasPage() {
               {/* Detalles */}
               {modalActivo.tipo === "detalles" && (
                 <>
-                  <h2 className="text-2xl font-bold text-white mb-6">📋 Detalles de la Reserva</h2>
+                  <h2 className="text-2xl font-bold text-white mb-6">Detalles de la Reserva</h2>
                   <div className="space-y-4 mb-6">
                     <div>
                       <p className="text-gray-400 text-sm">Habitación</p>
@@ -349,7 +349,7 @@ export default function ReservasPage() {
               {/* Modificar */}
               {modalActivo.tipo === "modificar" && (
                 <>
-                  <h2 className="text-2xl font-bold text-white mb-6">✏️ Modificar Reserva</h2>
+                  <h2 className="text-2xl font-bold text-white mb-6">Modificar Reserva</h2>
                   <p className="text-gray-300 mb-6">
                     Para modificar tu reserva, por favor contacta al equipo de soporte. Podemos ayudarte a cambiar fechas o habitación.
                   </p>
@@ -365,7 +365,7 @@ export default function ReservasPage() {
               {/* Cancelar */}
               {modalActivo.tipo === "cancelar" && (
                 <>
-                  <h2 className="text-2xl font-bold text-white mb-6">🗑️ Cancelar Reserva</h2>
+                  <h2 className="text-2xl font-bold text-white mb-6"> Cancelar Reserva</h2>
                   <p className="text-gray-300 mb-4">
                     ¿Estás seguro de que deseas cancelar esta reserva?
                   </p>

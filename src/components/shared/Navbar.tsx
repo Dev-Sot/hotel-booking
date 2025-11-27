@@ -101,7 +101,7 @@ export default function Navbar() {
                     href="/reservas"
                     className="block px-4 py-2 text-sm text-gray-300 hover:bg-amber-500/20 hover:text-white transition"
                   >
-                    📋 Mis Reservas
+                     Mis Reservas
                   </Link>
                   <button
                     onClick={handleLogout}

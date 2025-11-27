@@ -119,7 +119,7 @@ export default function ServiciosPage() {
               Nuestro equipo de concierge está disponible 24/7 para ayudarte con cualquier solicitud especial. No dudes en contactarnos.
             </p>
             <button className="bg-amber-500 hover:bg-amber-600 text-gray-900 px-8 py-3 rounded-lg font-semibold transition">
-              Contactar Concierge
+              Contactar
             </button>
           </motion.div>
         </section>
