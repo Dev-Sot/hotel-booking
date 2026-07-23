@@ -20,13 +20,15 @@ export interface Habitacion {
 export interface Reserva {
   id: string;
   usuarioId: string;
-  habitacionId: string;
+  habitacionId?: string | null;
   nombre: string;
   tipo: string;
   fechaInicio: string;
   fechaFin: string;
   estado: "pendiente" | "confirmada" | "cancelada";
   createdAt: string;
+  // Presente solo cuando la reserva se trae unida (join) a su habitación.
+  habitacion?: Pick<Habitacion, "titulo" | "precio" | "imagen"> | null;
 }
 
 export interface Servicio {

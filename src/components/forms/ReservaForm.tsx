@@ -6,37 +6,84 @@ import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { ReservaFormProps } from "@/types";
 import { useAuthContext } from "@/context/AuthContext";
+import { useReservaContext } from "@/context/ReservaContext";
 import { signInWithGoogle } from "@/lib/api/auth";
+import { validateDateRange, validateFutureDate, validateName } from "@/lib/utils/validators";
+import { ROOM_TYPE_LABELS, ROOM_TYPES } from "@/lib/utils/constants";
 
-export default function ReservaForm({ open, onClose }: ReservaFormProps) {
+export default function ReservaForm({ open, onClose, habitacion }: ReservaFormProps) {
   const { user, loading: authLoading } = useAuthContext();
+  const { crear, loading: creando, error: reservaError } = useReservaContext();
   const [nombre, setNombre] = useState("");
   const [tipo, setTipo] = useState("");
   const [fechaInicio, setFechaInicio] = useState("");
   const [fechaFin, setFechaFin] = useState("");
   const [confirmado, setConfirmado] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const handleGoogleLogin = async () => {
     await signInWithGoogle(window.location.href);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleClose = () => {
+    setFormError(null);
+    setConfirmado(false);
+    onClose();
+  };
+
+  const resetForm = () => {
+    setNombre("");
+    setTipo("");
+    setFechaInicio("");
+    setFechaFin("");
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setConfirmado(true);
-    setTimeout(() => {
-      setConfirmado(false);
-      onClose();
-      setNombre("");
-      setTipo("");
-      setFechaInicio("");
-      setFechaFin("");
-    }, 2000);
+    setFormError(null);
+
+    if (!validateName(nombre)) {
+      setFormError("Ingresa tu nombre completo (mínimo 2 caracteres).");
+      return;
+    }
+    if (!habitacion && !tipo) {
+      setFormError("Selecciona un tipo de habitación.");
+      return;
+    }
+    if (!validateFutureDate(fechaInicio)) {
+      setFormError("La fecha de entrada no puede ser en el pasado.");
+      return;
+    }
+    if (!validateDateRange(fechaInicio, fechaFin)) {
+      setFormError("La fecha de salida debe ser posterior a la de entrada.");
+      return;
+    }
+
+    const ok = await crear({
+      usuarioId: user!.id,
+      habitacionId: habitacion?.id ?? null,
+      nombre,
+      tipo: habitacion?.tipo ?? tipo,
+      fechaInicio,
+      fechaFin,
+      estado: "pendiente",
+    });
+
+    if (ok) {
+      setConfirmado(true);
+      setTimeout(() => {
+        resetForm();
+        handleClose();
+      }, 2000);
+    } else {
+      setFormError(reservaError || "No se pudo crear la reserva. Intenta nuevamente.");
+    }
   };
 
   // Loading de autenticación
   if (authLoading) {
     return (
-      <Modal open={open} onClose={onClose} title="Cargando...">
+      <Modal open={open} onClose={handleClose} title="Cargando...">
         <div className="flex justify-center py-8">
           <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-amber-500"></div>
         </div>
@@ -47,7 +94,7 @@ export default function ReservaForm({ open, onClose }: ReservaFormProps) {
   // Usuario no autenticado - mostrar login con Google
   if (!user) {
     return (
-      <Modal open={open} onClose={onClose} title="Inicia sesión para reservar">
+      <Modal open={open} onClose={handleClose} title="Inicia sesión para reservar">
         <div className="text-center py-4">
           <div className="text-5xl mb-4">🔐</div>
           <p className="text-gray-600 mb-6">
@@ -87,13 +134,13 @@ export default function ReservaForm({ open, onClose }: ReservaFormProps) {
 
   // Usuario autenticado - mostrar formulario
   return (
-    <Modal open={open} onClose={onClose} title="Reserva tu habitación">
+    <Modal open={open} onClose={handleClose} title="Reserva tu habitación">
       {!confirmado ? (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-gray-700">
           <p className="text-sm text-gray-500 mb-2">
             Reservando como: <span className="font-medium text-gray-700">{user.email}</span>
           </p>
-          
+
           <Input
             type="text"
             required
@@ -103,20 +150,30 @@ export default function ReservaForm({ open, onClose }: ReservaFormProps) {
             label="Nombre completo"
           />
 
-          <div>
-            <label className="block font-medium mb-1">Tipo de habitación</label>
-            <select
-              required
-              value={tipo}
-              onChange={(e) => setTipo(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
-            >
-              <option value="">Selecciona</option>
-              <option value="suite">Suite Presidencial</option>
-              <option value="doble">Doble Deluxe</option>
-              <option value="sencilla">Sencilla Ejecutiva</option>
-            </select>
-          </div>
+          {habitacion ? (
+            <div className="rounded-lg border border-gray-200 p-3">
+              <p className="text-xs text-gray-500 mb-1">Habitación seleccionada</p>
+              <p className="font-semibold">{habitacion.titulo}</p>
+              <p className="text-sm text-amber-600">${habitacion.precio}/noche</p>
+            </div>
+          ) : (
+            <div>
+              <label className="block font-medium mb-1">Tipo de habitación</label>
+              <select
+                required
+                value={tipo}
+                onChange={(e) => setTipo(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
+              >
+                <option value="">Selecciona</option>
+                {Object.values(ROOM_TYPES).map((value) => (
+                  <option key={value} value={value}>
+                    {ROOM_TYPE_LABELS[value]}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div className="grid grid-cols-2 gap-4">
             <Input
@@ -135,8 +192,10 @@ export default function ReservaForm({ open, onClose }: ReservaFormProps) {
             />
           </div>
 
-          <Button type="submit" variant="primary" fullWidth>
-            Confirmar Reserva
+          {formError && <p className="text-sm text-red-600">{formError}</p>}
+
+          <Button type="submit" variant="primary" fullWidth disabled={creando}>
+            {creando ? "Reservando..." : "Confirmar Reserva"}
           </Button>
         </form>
       ) : (

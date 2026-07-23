@@ -1,19 +1,28 @@
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { HABITACIONES_SEED } from "@/lib/data/habitaciones.seed";
 import { Habitacion } from "@/types";
 
+const supabase = createClient();
+
 /**
- * Obtener todas las habitaciones
+ * Obtener todas las habitaciones activas. Sin Supabase configurado, cae a
+ * datos de ejemplo (HABITACIONES_SEED) para que la demo se pueda navegar;
+ * `demo: true` permite a la UI avisarlo en vez de fingir que son datos reales.
  */
 export async function getHabitaciones() {
+  if (!isSupabaseConfigured) {
+    return { success: true, data: HABITACIONES_SEED, demo: true as const };
+  }
   try {
     const { data, error } = await supabase
       .from("habitaciones")
       .select("*")
       .eq("activa", true);
     if (error) throw error;
-    return { success: true, data: data || [] };
+    return { success: true, data: data || [], demo: false as const };
   } catch (error) {
-    return { success: false, error: (error as Error).message };
+    return { success: false, error: (error as Error).message, demo: false as const };
   }
 }
 
@@ -55,6 +64,9 @@ export async function getHabitacionesByTipo(tipo: string) {
  * Crear habitación (admin)
  */
 export async function createHabitacion(habitacion: Omit<Habitacion, "id">) {
+  if (!isSupabaseConfigured) {
+    return { success: false, error: "Supabase no está configurado todavía: no se puede guardar la habitación." };
+  }
   try {
     const { data, error } = await supabase
       .from("habitaciones")
@@ -71,6 +83,9 @@ export async function createHabitacion(habitacion: Omit<Habitacion, "id">) {
  * Actualizar habitación (admin)
  */
 export async function updateHabitacion(id: string, updates: Partial<Habitacion>) {
+  if (!isSupabaseConfigured) {
+    return { success: false, error: "Supabase no está configurado todavía: no se puede actualizar la habitación." };
+  }
   try {
     const { data, error } = await supabase
       .from("habitaciones")
@@ -88,6 +103,9 @@ export async function updateHabitacion(id: string, updates: Partial<Habitacion>)
  * Eliminar habitación (admin)
  */
 export async function deleteHabitacion(id: string) {
+  if (!isSupabaseConfigured) {
+    return { success: false, error: "Supabase no está configurado todavía: no se puede eliminar la habitación." };
+  }
   try {
     const { error } = await supabase
       .from("habitaciones")

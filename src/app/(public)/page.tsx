@@ -1,13 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import ReservaForm from "@/components/forms/ReservaForm";
 import Navbar from "@/components/shared/Navbar";
-
+import { getHabitaciones } from "@/lib/api/habitaciones";
+import { Habitacion } from "@/types";
+import { formatPrice } from "@/lib/utils/formatters";
 
 export default function Home() {
   const [openReserva, setOpenReserva] = useState(false);
+  const [habitacionActiva, setHabitacionActiva] = useState<Habitacion | null>(null);
+  const [destacadas, setDestacadas] = useState<Habitacion[]>([]);
+
+  const reservarHabitacion = (room: Habitacion) => {
+    setHabitacionActiva(room);
+    setOpenReserva(true);
+  };
+
+  const reservarGenerico = () => {
+    setHabitacionActiva(null);
+    setOpenReserva(true);
+  };
+
+  useEffect(() => {
+    (async () => {
+      const result = await getHabitaciones();
+      if (result.success) setDestacadas((result.data || []).slice(0, 3));
+    })();
+  }, []);
 
   return (
     <div className="text-gray-100">
@@ -41,7 +63,7 @@ export default function Home() {
 
             <div className="mt-8 flex gap-4">
               <button
-                onClick={() => setOpenReserva(true)}
+                onClick={reservarGenerico}
                 className="bg-amber-500/95 hover:bg-amber-500 text-gray-900 font-medium px-6 py-3 rounded-lg shadow-md transition"
                 aria-label="Reservar ahora"
               >
@@ -78,50 +100,33 @@ export default function Home() {
           </motion.h2>
 
           <div className="grid gap-8 md:grid-cols-3">
-            {[
-              {
-                title: "Suite Presidencial",
-                desc: "Amplia suite con vista panorámica, cama king y salón privado.",
-                price: 950,
-                img: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1400&q=80",
-              },
-              {
-                title: "Suite Deluxe",
-                desc: "Diseño contemporáneo, balcón y servicios premium.",
-                price: 620,
-                img: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1400&q=80",
-              },
-              {
-                title: "Doble Ejecutiva",
-                desc: "Cómoda, funcional y perfecta para viajes de negocios.",
-                price: 420,
-                img: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1400&q=80",
-              },
-            ].map((room) => (
+            {destacadas.map((room) => (
               <motion.article
-                key={room.title}
+                key={room.id}
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 className="bg-white/5 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition"
               >
                 <div className="relative h-56 w-full">
-                  <img
-                    src={room.img}
-                    alt={room.title}
-                    className="object-cover w-full h-full"
+                  <Image
+                    src={room.imagen}
+                    alt={room.titulo}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
                 </div>
 
                 <div className="p-6">
-                  <h3 className="text-xl font-semibold text-white">{room.title}</h3>
-                  <p className="mt-2 text-gray-300 text-sm">{room.desc}</p>
+                  <h3 className="text-xl font-semibold text-white">{room.titulo}</h3>
+                  <p className="mt-2 text-gray-300 text-sm">{room.descripcion}</p>
 
                   <div className="mt-4 flex items-center justify-between">
-                    <div className="text-white font-semibold">${room.price} / noche</div>
+                    <div className="text-white font-semibold">{formatPrice(room.precio)} / noche</div>
                     <button
-                      onClick={() => setOpenReserva(true)}
+                      onClick={() => reservarHabitacion(room)}
                       className="bg-amber-500/95 hover:bg-amber-500 text-gray-900 px-4 py-2 rounded-lg font-medium transition"
                     >
                       Reservar
@@ -210,7 +215,14 @@ export default function Home() {
       </main>
 
       {/* ReservaForm: componente movido a src/components/forms */}
-      <ReservaForm open={openReserva} onClose={() => setOpenReserva(false)} />
+      <ReservaForm
+        open={openReserva}
+        onClose={() => {
+          setOpenReserva(false);
+          setHabitacionActiva(null);
+        }}
+        habitacion={habitacionActiva}
+      />
     </div>
   );
 }

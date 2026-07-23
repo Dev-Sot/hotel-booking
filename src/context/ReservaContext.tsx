@@ -1,12 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState } from "react";
-import {
-  createReserva,
-  getReservasByUser,
-  updateReserva,
-  cancelReserva,
-} from "@/lib/api";
+import { createReserva, getReservasByUser, updateReserva } from "@/lib/api";
 import { Reserva } from "@/types";
 
 interface ReservaContextType {

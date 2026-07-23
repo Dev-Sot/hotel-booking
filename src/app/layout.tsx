@@ -1,7 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
-import { AuthProvider } from "@/context";
+import { AuthProvider, ReservaProvider } from "@/context";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -38,7 +38,7 @@ export default function RootLayout({
 
         {/* Contenido principal */}
         <AuthProvider>
-          {children}
+          <ReservaProvider>{children}</ReservaProvider>
         </AuthProvider>
       </body>
     </html>
