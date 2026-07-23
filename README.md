@@ -32,22 +32,13 @@ Construido como proyecto de portafolio full-stack: cubre autenticación real, au
 
 ## Screenshots
 
-<!--
-  Reemplaza estos placeholders con capturas reales antes de publicar:
-  - Home (hero + habitaciones destacadas)
-  - Catálogo de Habitaciones
-  - Modal de reserva
-  - Mis Reservas
-  - Panel de Administración (CRUD de habitaciones)
--->
-
 | Home | Habitaciones |
 |---|---|
-| _`docs/screenshots/home.png`_ | _`docs/screenshots/habitaciones.png`_ |
+| ![Home](docs/screenshots/home.png) | ![Habitaciones](docs/screenshots/habitaciones.png) |
 
 | Mis Reservas | Panel de Admin |
 |---|---|
-| _`docs/screenshots/reservas.png`_ | _`docs/screenshots/admin.png`_ |
+| ![Mis Reservas](docs/screenshots/reservas.png) | ![Panel de Admin](docs/screenshots/admin.png) |
 
 ## Tecnologías utilizadas
 
