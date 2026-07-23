@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useAuthContext } from "@/context";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const { user, loading, logout } = useAuthContext();
 
   useEffect(() => {
@@ -29,6 +30,7 @@ export default function Navbar() {
   const handleLogout = async () => {
     await logout();
     setMenuOpen(false);
+    setMobileOpen(false);
   };
 
   return (
@@ -37,7 +39,7 @@ export default function Navbar() {
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        scrolled ? "bg-black/85 backdrop-blur-md shadow-lg" : "bg-transparent"
+        scrolled || mobileOpen ? "bg-black/85 backdrop-blur-md shadow-lg" : "bg-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center text-white">
@@ -62,7 +64,7 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* Auth Section */}
+        {/* Auth Section (desktop) */}
         <div className="ml-6 hidden md:flex items-center gap-4">
           {loading ? (
             <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-amber-500"></div>
@@ -75,13 +77,15 @@ export default function Navbar() {
             >
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
+                aria-haspopup="true"
+                aria-expanded={menuOpen}
                 className="flex items-center gap-3 bg-amber-500/90 hover:bg-amber-500 text-gray-900 px-5 py-2.5 rounded-lg font-semibold transition shadow-lg border-2 border-amber-400"
               >
-                <span className="text-xl">👤</span>
+                <span className="text-xl" aria-hidden="true">👤</span>
                 <span className="text-sm font-bold truncate max-w-[150px]">
                   {user.nombre || user.email?.split("@")[0] || "Usuario"}
                 </span>
-                <span className="text-xs">▼</span>
+                <span className="text-xs" aria-hidden="true">▼</span>
               </button>
 
               {/* Dropdown Menu */}
@@ -117,6 +121,8 @@ export default function Navbar() {
             <div className="relative">
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
+                aria-haspopup="true"
+                aria-expanded={menuOpen}
                 className="bg-amber-500/95 hover:bg-amber-500 text-gray-900 px-4 py-2 rounded-lg font-medium transition transform hover:scale-105"
               >
                 Iniciar sesión
@@ -132,7 +138,6 @@ export default function Navbar() {
                     <button
                       onClick={() => {
                         setMenuOpen(false);
-                        // navegar a la página de login
                         window.location.href = "/login";
                       }}
                       className="w-full text-left px-4 py-3 mb-2 bg-sky-50 hover:bg-sky-100 rounded-md"
@@ -162,7 +167,72 @@ export default function Navbar() {
             </div>
           )}
         </div>
+
+        {/* Botón de menú móvil */}
+        <button
+          onClick={() => setMobileOpen(!mobileOpen)}
+          aria-label={mobileOpen ? "Cerrar menú" : "Abrir menú"}
+          aria-expanded={mobileOpen}
+          className="md:hidden flex flex-col justify-center items-center gap-1.5 w-10 h-10"
+        >
+          <span
+            className={`block h-0.5 w-6 bg-white transition-transform ${mobileOpen ? "translate-y-2 rotate-45" : ""}`}
+          />
+          <span className={`block h-0.5 w-6 bg-white transition-opacity ${mobileOpen ? "opacity-0" : ""}`} />
+          <span
+            className={`block h-0.5 w-6 bg-white transition-transform ${mobileOpen ? "-translate-y-2 -rotate-45" : ""}`}
+          />
+        </button>
       </div>
+
+      {/* Panel de navegación móvil */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden overflow-hidden bg-black/95 border-t border-white/10"
+          >
+            <ul className="px-6 py-4 space-y-3 text-white">
+              {links.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    className="block py-1 hover:text-amber-400 transition"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <div className="px-6 pb-6 border-t border-white/10 pt-4">
+              {user ? (
+                <div className="space-y-3">
+                  <p className="text-xs text-gray-400">
+                    Conectado como <span className="text-white">{user.nombre || user.email}</span>
+                  </p>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left px-4 py-2 text-sm rounded-md bg-red-600/20 text-red-300"
+                  >
+                    Cerrar Sesión
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  href="/login"
+                  onClick={() => setMobileOpen(false)}
+                  className="block w-full text-center bg-amber-500 hover:bg-amber-600 text-gray-900 px-4 py-2 rounded-lg font-medium transition"
+                >
+                  Iniciar sesión
+                </Link>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.nav>
   );
 }

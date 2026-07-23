@@ -1,3 +1,4 @@
+import { useId } from "react";
 import { InputProps } from "@/types";
 
 export default function Input({
@@ -9,17 +10,24 @@ export default function Input({
   required = false,
   className = "",
 }: InputProps) {
+  const generatedId = useId();
+
   return (
     <div>
-      {label && <label className="block font-medium mb-1">{label}</label>}
+      {label && (
+        <label htmlFor={generatedId} className="block font-medium mb-1">
+          {label}
+        </label>
+      )}
       <input
+        id={generatedId}
         type={type}
         required={required}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
         className={`
-          w-full border border-gray-300 rounded-lg p-2 
+          w-full border border-gray-300 rounded-lg p-2
           focus:outline-none focus:ring-2 focus:ring-amber-500
           ${className}
         `}

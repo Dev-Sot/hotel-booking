@@ -1,8 +1,18 @@
 "use client";
+import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ModalProps } from "@/types";
 
 export default function Modal({ open, onClose, title, children }: ModalProps) {
+  useEffect(() => {
+    if (!open) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [open, onClose]);
+
   return (
     <AnimatePresence>
       {open && (
@@ -11,10 +21,14 @@ export default function Modal({ open, onClose, title, children }: ModalProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          role="dialog"
+          aria-modal="true"
+          aria-label={title}
         >
           <div
             className="absolute inset-0 bg-black/60"
             onClick={onClose}
+            aria-hidden="true"
           />
           <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
@@ -24,6 +38,7 @@ export default function Modal({ open, onClose, title, children }: ModalProps) {
           >
             <button
               onClick={onClose}
+              aria-label="Cerrar"
               className="absolute top-3 right-3 text-gray-600 hover:text-gray-800"
             >
               ×
