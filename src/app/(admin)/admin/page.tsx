@@ -12,7 +12,7 @@ import {
 } from "@/lib/api/habitaciones";
 import { Habitacion } from "@/types";
 import { ROOM_TYPES, ROOM_TYPE_LABELS } from "@/lib/utils/constants";
-import { formatPrice } from "@/lib/utils/formatters";
+import { capitalize, formatPrice } from "@/lib/utils/formatters";
 
 const EMPTY_FORM = {
   titulo: "",
@@ -347,7 +347,7 @@ export default function AdminPage() {
                       {habitaciones.map((room) => (
                         <tr key={room.id} className="border-b border-gray-800">
                           <td className="py-3 pr-4 font-medium">{room.titulo}</td>
-                          <td className="py-3 pr-4 text-gray-400">{ROOM_TYPE_LABELS[room.tipo] ?? room.tipo}</td>
+                          <td className="py-3 pr-4 text-gray-400">{capitalize(room.tipo)}</td>
                           <td className="py-3 pr-4 text-amber-400">{formatPrice(room.precio)}</td>
                           <td className="py-3 pr-4">
                             {room.activa ? (
