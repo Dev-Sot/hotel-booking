@@ -1,11 +1,7 @@
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
+import { useMockAuth } from "@/lib/supabase/config";
 
-// Detectar modo mock para desarrollo local (cuando la URL de Supabase es placeholder
-// o cuando el desarrollador define NEXT_PUBLIC_USE_MOCK_AUTH=true)
-const useMockAuth = Boolean(
-  process.env.NEXT_PUBLIC_USE_MOCK_AUTH === "true" ||
-    process.env.NEXT_PUBLIC_SUPABASE_URL?.includes("placeholder")
-);
+const supabase = createClient();
 
 const MOCK_USER = {
   id: "dev-user",
@@ -14,19 +10,19 @@ const MOCK_USER = {
   created_at: new Date().toISOString(),
 };
 
-function saveMockUser() {
-  if (typeof window !== "undefined") {
-    try {
+async function setMockSession(active: boolean) {
+  if (typeof window === "undefined") return;
+  try {
+    if (active) {
       localStorage.setItem("mock_user", JSON.stringify(MOCK_USER));
-    } catch {}
-  }
-}
-
-function clearMockUser() {
-  if (typeof window !== "undefined") {
-    try {
+      await fetch("/api/mock-auth", { method: "POST" });
+    } else {
       localStorage.removeItem("mock_user");
-    } catch {}
+      await fetch("/api/mock-auth", { method: "DELETE" });
+    }
+  } catch {
+    // Si el endpoint falla, la sesión mock sigue funcionando solo en el
+    // cliente; el middleware simplemente no la reconocerá.
   }
 }
 
@@ -45,10 +41,8 @@ function loadMockUser() {
  */
 export async function signInWithGoogle(redirectTo: string) {
   if (useMockAuth) {
-    // Simular flujo: guardar usuario falso y redirigir localmente
-    saveMockUser();
+    await setMockSession(true);
     if (typeof window !== "undefined" && redirectTo) {
-      // pequeña pausa para simular latencia
       setTimeout(() => (window.location.href = redirectTo), 400);
     }
     return { success: true, data: MOCK_USER };
@@ -71,7 +65,7 @@ export async function signInWithGoogle(redirectTo: string) {
  */
 export async function sendMagicLink(email: string) {
   if (useMockAuth) {
-    saveMockUser();
+    await setMockSession(true);
     return { success: true, data: { message: "magic link simulated" } };
   }
 
@@ -90,8 +84,7 @@ export async function sendMagicLink(email: string) {
 export async function getCurrentUser() {
   if (useMockAuth) {
     const user = loadMockUser();
-    if (user) return { success: true, user };
-    return { success: true, user: null };
+    return { success: true, user };
   }
 
   try {
@@ -108,7 +101,7 @@ export async function getCurrentUser() {
  */
 export async function signOut() {
   if (useMockAuth) {
-    clearMockUser();
+    await setMockSession(false);
     return { success: true };
   }
 
