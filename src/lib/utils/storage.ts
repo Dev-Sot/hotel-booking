@@ -14,7 +14,7 @@ export function setItem<T>(key: string, value: T) {
   }
 }
 
-export function getItem<T = any>(key: string): T | null {
+export function getItem<T = unknown>(key: string): T | null {
   if (!isBrowser) return null;
   try {
     const raw = localStorage.getItem(key);

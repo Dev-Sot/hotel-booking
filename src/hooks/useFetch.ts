@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 
-interface UseFetchOptions {
-  onSuccess?: (data: any) => void;
+interface UseFetchOptions<T> {
+  onSuccess?: (data?: T) => void;
   onError?: (error: string) => void;
 }
 
@@ -10,7 +10,7 @@ interface UseFetchOptions {
  */
 export function useFetch<T>(
   fetcher: () => Promise<{ success: boolean; data?: T; error?: string }>,
-  options?: UseFetchOptions
+  options?: UseFetchOptions<T>
 ) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(false);
