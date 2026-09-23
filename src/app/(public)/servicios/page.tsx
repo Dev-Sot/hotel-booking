@@ -1,129 +1,114 @@
 "use client";
 
-import { motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
 import Navbar from "@/components/shared/Navbar";
+import Footer from "@/components/shared/Footer";
+import PageHero from "@/components/shared/PageHero";
+import Reveal from "@/components/shared/Reveal";
+import SectionHeading from "@/components/shared/SectionHeading";
+import Icon, { IconName } from "@/components/ui/Icon";
+
+const SERVICIOS: { title: string; desc: string; icon: IconName }[] = [
+  { title: "Spa & Wellness", desc: "Masajes personalizados, sauna, jacuzzi y rituales holísticos en cabinas privadas.", icon: "spa" },
+  { title: "Restaurante Gourmet", desc: "Cocina internacional de temporada y servicio en suite disponible las 24 horas.", icon: "dining" },
+  { title: "Gimnasio", desc: "Equipamiento de última generación, entrenador personal y clases de yoga y pilates.", icon: "fitness" },
+  { title: "Piscina climatizada", desc: "Piscina interior con bar de cócteles y servicio de toallas y tumbonas.", icon: "pool" },
+  { title: "Concierge privado", desc: "Asistencia permanente para reservas, excursiones y experiencias a medida.", icon: "concierge" },
+  { title: "Cine privado", desc: "Sala de proyección para grupos reducidos con selección gourmet.", icon: "cinema" },
+  { title: "Business Center", desc: "Salas de reuniones equipadas, conexión de alta velocidad y soporte administrativo.", icon: "business" },
+  { title: "Traslados", desc: "Vehículos con conductor hacia el aeropuerto, restaurantes y puntos de interés.", icon: "car" },
+  { title: "Club infantil", desc: "Cuidado profesional con actividades educativas y recreativas para los más pequeños.", icon: "child" },
+  { title: "Biblioteca", desc: "Un salón silencioso con chimenea, lectura seleccionada y café de especialidad.", icon: "library" },
+  { title: "Eventos", desc: "Salones para bodas, congresos y celebraciones privadas con coordinación integral.", icon: "events" },
+  { title: "Boutique", desc: "Selección de firmas internacionales y artículos de regalo exclusivos.", icon: "boutique" },
+];
+
+const DESTACADOS = [
+  {
+    eyebrow: "Bienestar",
+    title: "Un spa para desconectar",
+    desc: "Más de mil metros cuadrados dedicados al descanso: circuito de aguas, cabinas de tratamiento y zona de relajación con luz natural.",
+    image: "/spa.jpg",
+  },
+  {
+    eyebrow: "Gastronomía",
+    title: "La mesa como experiencia",
+    desc: "Producto local, técnica contemporánea y una bodega que acompaña cada plato. Desayunos a la carta y cenas privadas bajo petición.",
+    image: "/restaurant.jpg",
+  },
+];
 
 export default function ServiciosPage() {
-  const servicios = [
-    {
-      title: "Spa & Wellness",
-      desc: "Relajación total con masajes personalizados, sauna, jacuzzi y tratamientos holísticos.",
-      icon: "🧖",
-    },
-    {
-      title: "Restaurante Gourmet",
-      desc: "Cocina internacional de alta categoría con chef estrella Michelin. Servicio 24/7.",
-      icon: "🍽️",
-    },
-    {
-      title: "Gym Premium",
-      desc: "Equipamiento moderno, entrenador personal disponible y clases de yoga y pilates.",
-      icon: "💪",
-    },
-    {
-      title: "Piscina Olímpica",
-      desc: "Piscina climatizada con barra de cócteles, zona infantil y servicio de sombrillas.",
-      icon: "🏊",
-    },
-    {
-      title: "Concierge VIP",
-      desc: "Asistencia 24/7 para reservas, tours, transportes y experiencias personalizadas.",
-      icon: "🎩",
-    },
-    {
-      title: "Cine Privado",
-      desc: "Sala de cine con la mejor tecnología, snacks gourmet y dulces caseros.",
-      icon: "🎬",
-    },
-    {
-      title: "Business Center",
-      desc: "Sala de reuniones completamente equipada, internet 5G y servicios administrativos.",
-      icon: "💼",
-    },
-    {
-      title: "Servicio de Limousina",
-      desc: "Transporte lujoso hacia aeropuerto, restaurantes y lugares de interés.",
-      icon: "🚗",
-    },
-    {
-      title: "Guardería Infantil",
-      desc: "Cuidado profesional para niños con actividades educativas y recreativas.",
-      icon: "👶",
-    },
-    {
-      title: "Biblioteca & Zona Lectura",
-      desc: "Miles de libros, ambiente tranquilo con chimenea y café premium.",
-      icon: "📚",
-    },
-    {
-      title: "Eventos & Conferencias",
-      desc: "Salones equipados para bodas, congresos y reuniones corporativas.",
-      icon: "🎊",
-    },
-    {
-      title: "Tienda de Artículos de Lujo",
-      desc: "Compras exclusivas de marcas internacionales y artículos de regalo premium.",
-      icon: "🛍️",
-    },
-  ];
-
   return (
-    <div className="min-h-screen bg-[#06070a] text-white">
+    <div className="min-h-screen bg-ink">
       <Navbar />
 
-      <main className="pt-20">
-        {/* Hero */}
-        <section className="max-w-6xl mx-auto px-6 py-16">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h1 className="text-5xl font-bold mb-4">Servicios Premium</h1>
-            <p className="text-xl text-gray-300 max-w-3xl">
-              Nuestro hotel ofrece una amplia gama de servicios diseñados para hacer tu estancia memorable. Desde bienestar hasta entretenimiento, tenemos todo para ti.
-            </p>
-          </motion.div>
+      <PageHero
+        eyebrow="Servicios"
+        title="Servicios Premium"
+        image="/spa.jpg"
+        description="Todo lo necesario para que tu estancia sea memorable, desde el bienestar hasta la gastronomía, sin salir del hotel."
+      />
+
+      <main>
+        <section className="container-site space-y-24 py-24 md:space-y-32 md:py-32">
+          {DESTACADOS.map((d, i) => (
+            <div key={d.title} className="grid items-center gap-10 md:grid-cols-12 md:gap-16">
+              <Reveal className={`md:col-span-7 ${i % 2 ? "md:order-2" : ""}`}>
+                <div className="relative aspect-[16/11] overflow-hidden">
+                  <Image src={d.image} alt={d.title} fill sizes="(max-width: 768px) 100vw, 58vw" className="object-cover" />
+                </div>
+              </Reveal>
+              <Reveal delay={0.12} className="md:col-span-5">
+                <p className="eyebrow">{d.eyebrow}</p>
+                <h2 className="mt-4 text-4xl leading-tight md:text-5xl">{d.title}</h2>
+                <p className="mt-5 leading-relaxed text-sand-muted">{d.desc}</p>
+              </Reveal>
+            </div>
+          ))}
         </section>
 
-        {/* Grid de Servicios */}
-        <section className="max-w-6xl mx-auto px-6 pb-20">
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {servicios.map((servicio, idx) => (
-              <motion.article
-                key={servicio.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
-                className="bg-gradient-to-br from-amber-500/10 to-amber-600/5 rounded-2xl p-8 border border-amber-500/20 hover:border-amber-500/50 transition-all hover:shadow-lg hover:shadow-amber-500/20"
-              >
-                <div className="text-5xl mb-4">{servicio.icon}</div>
-                <h3 className="text-2xl font-semibold text-white mb-3">{servicio.title}</h3>
-                <p className="text-gray-300">{servicio.desc}</p>
-              </motion.article>
-            ))}
+        <section className="border-t border-white/[0.06] bg-ink-800 py-24 md:py-32">
+          <div className="container-site">
+            <Reveal>
+              <SectionHeading
+                eyebrow="A tu disposición"
+                title="Todo lo que ofrecemos"
+                description="Servicios incluidos o disponibles bajo reserva a través de nuestro concierge."
+                align="center"
+              />
+            </Reveal>
+
+            <div className="mt-16 grid gap-px border border-white/[0.07] bg-white/[0.07] sm:grid-cols-2 lg:grid-cols-3">
+              {SERVICIOS.map((s, i) => (
+                <Reveal key={s.title} delay={(i % 3) * 0.08} className="h-full">
+                  <article className="group h-full bg-ink-800 p-9 transition-colors duration-500 hover:bg-ink-700 md:p-10">
+                    <Icon name={s.icon} className="h-8 w-8 text-gold" strokeWidth={1} />
+                    <h3 className="mt-8 text-2xl">{s.title}</h3>
+                    <p className="mt-3 text-sm leading-relaxed text-sand-muted">{s.desc}</p>
+                  </article>
+                </Reveal>
+              ))}
+            </div>
           </div>
         </section>
 
-        {/* Sección de Contacto */}
-        <section className="max-w-6xl mx-auto px-6 py-16 border-t border-white/5">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="bg-gradient-to-r from-amber-500/20 to-amber-600/10 rounded-3xl p-12 text-center"
-          >
-            <h2 className="text-3xl font-bold mb-4">¿Necesitas un servicio personalizado?</h2>
-            <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
-              Nuestro equipo de concierge está disponible 24/7 para ayudarte con cualquier solicitud especial. No dudes en contactarnos.
+        <section className="py-24 md:py-32">
+          <Reveal className="container-site text-center">
+            <p className="eyebrow">Concierge</p>
+            <h2 className="mx-auto mt-6 max-w-2xl text-4xl leading-tight md:text-5xl">¿Necesitas un servicio personalizado?</h2>
+            <p className="mx-auto mt-5 max-w-xl text-sand-muted">
+              Nuestro equipo está disponible las 24 horas para atender cualquier solicitud especial.
             </p>
-            <button className="bg-amber-500 hover:bg-amber-600 text-gray-900 px-8 py-3 rounded-lg font-semibold transition">
+            <Link href="/contacto" className="btn-gold mt-10">
               Contactar
-            </button>
-          </motion.div>
+            </Link>
+          </Reveal>
         </section>
       </main>
+
+      <Footer />
     </div>
   );
 }

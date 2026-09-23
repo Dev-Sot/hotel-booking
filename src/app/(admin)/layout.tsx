@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Panel Admin - Hotel Booking",
+  title: "Panel de administración",
   description: "Panel de administración de Hotel Booking",
 };
 

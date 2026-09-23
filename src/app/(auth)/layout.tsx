@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Iniciar sesión - Hotel Booking",
+  title: "Iniciar sesión",
   description: "Accede a tu cuenta de Hotel Booking",
 };
 

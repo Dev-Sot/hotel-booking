@@ -2,12 +2,34 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import ReservaForm from "@/components/forms/ReservaForm";
 import Navbar from "@/components/shared/Navbar";
+import Footer from "@/components/shared/Footer";
+import PageHero from "@/components/shared/PageHero";
+import Reveal from "@/components/shared/Reveal";
+import Icon, { IconName } from "@/components/ui/Icon";
 import { getHabitaciones } from "@/lib/api/habitaciones";
 import { Habitacion } from "@/types";
 import { formatPrice } from "@/lib/utils/formatters";
+import { ROOM_TYPE_LABELS } from "@/lib/utils/constants";
+
+const AMENITIES: Record<Habitacion["tipo"], { icon: IconName; label: string }[]> = {
+  suite: [
+    { icon: "area", label: "85 m²" },
+    { icon: "bed", label: "Cama king" },
+    { icon: "view", label: "Vista panorámica" },
+  ],
+  doble: [
+    { icon: "area", label: "45 m²" },
+    { icon: "bed", label: "Dos camas queen" },
+    { icon: "wifi", label: "Wi-Fi de alta velocidad" },
+  ],
+  sencilla: [
+    { icon: "area", label: "32 m²" },
+    { icon: "bed", label: "Cama queen" },
+    { icon: "wifi", label: "Wi-Fi de alta velocidad" },
+  ],
+};
 
 export default function HabitacionesPage() {
   const [habitacionActiva, setHabitacionActiva] = useState<Habitacion | null>(null);
@@ -31,87 +53,88 @@ export default function HabitacionesPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#06070a] text-white">
+    <div className="min-h-screen bg-ink">
       <Navbar />
 
-      <main className="pt-20">
-        {/* Hero */}
-        <section className="max-w-6xl mx-auto px-6 py-16">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h1 className="text-5xl font-bold mb-4">Nuestras Habitaciones</h1>
-            <p className="text-xl text-gray-300 max-w-3xl">
-              Descubre nuestra variedad de habitaciones diseñadas para ofrecer confort, lujo y experiencias inolvidables. Cada espacio está pensado para tu comodidad.
-            </p>
-            {demo && (
-              <p className="mt-4 inline-block text-xs text-amber-300 bg-amber-500/10 border border-amber-500/30 rounded-full px-3 py-1">
-                Modo demo: conecta Supabase para mostrar el catálogo real de habitaciones.
-              </p>
-            )}
-          </motion.div>
-        </section>
+      <PageHero
+        eyebrow="Habitaciones y suites"
+        title="Nuestras Habitaciones"
+        image="/habitacion2.jpg"
+        description="Espacios concebidos para el descanso: materiales nobles, iluminación cálida y vistas que invitan a quedarse un día más."
+      >
+        {demo && (
+          <p className="mt-8 inline-flex items-center gap-2 border border-gold/30 bg-ink/60 px-4 py-2 text-xs text-gold-200 backdrop-blur">
+            <span className="h-1.5 w-1.5 rounded-full bg-gold" />
+            Modo demo: conecta Supabase para mostrar el catálogo real de habitaciones.
+          </p>
+        )}
+      </PageHero>
 
-        <section className="max-w-6xl mx-auto px-6 pb-20">
-          {loading ? (
-            <div className="flex justify-center py-20">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500" />
-            </div>
-          ) : error ? (
-            <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-8 text-center">
-              <p className="text-red-300 font-semibold">No se pudieron cargar las habitaciones</p>
-              <p className="text-red-300/80 text-sm mt-1">{error}</p>
-            </div>
-          ) : habitaciones.length === 0 ? (
-            <div className="bg-white/5 rounded-2xl p-12 text-center border border-white/10">
-              <p className="text-gray-300">Todavía no hay habitaciones publicadas.</p>
-            </div>
-          ) : (
-            <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
-              {habitaciones.map((room, idx) => (
-                <motion.article
-                  key={room.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: idx * 0.1 }}
-                  className="bg-white/5 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all hover:scale-105"
-                >
-                  <div className="relative h-64 w-full overflow-hidden">
-                    <Image
-                      src={room.imagen}
-                      alt={room.titulo}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-cover hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                    <div className="absolute top-4 right-4 bg-amber-500 text-gray-900 px-4 py-2 rounded-full font-bold">
-                      {formatPrice(room.precio)}/noche
+      <main className="container-site pb-32 pt-8">
+        {loading ? (
+          <div className="flex justify-center py-24">
+            <div className="h-10 w-10 animate-spin rounded-full border border-gold/30 border-t-gold" />
+          </div>
+        ) : error ? (
+          <div className="border border-red-400/30 bg-red-500/5 p-10 text-center">
+            <p className="text-red-200">No se pudieron cargar las habitaciones</p>
+            <p className="mt-1 text-sm text-red-200/70">{error}</p>
+          </div>
+        ) : habitaciones.length === 0 ? (
+          <div className="border border-white/10 p-14 text-center text-sand-muted">Todavía no hay habitaciones publicadas.</div>
+        ) : (
+          <div className="divide-y divide-white/[0.07]">
+            {habitaciones.map((room, idx) => (
+              <Reveal key={room.id}>
+                <article className="grid items-center gap-10 py-16 md:grid-cols-12 md:gap-16 md:py-20">
+                  <div className={`md:col-span-7 ${idx % 2 ? "md:order-2" : ""}`}>
+                    <div className="group relative aspect-[16/11] overflow-hidden">
+                      <Image
+                        src={room.imagen}
+                        alt={room.titulo}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 58vw"
+                        className="object-cover transition-transform duration-[1.4s] ease-luxe group-hover:scale-105"
+                      />
                     </div>
                   </div>
 
-                  <div className="p-6">
-                    <h3 className="text-2xl font-semibold text-white mb-2">{room.titulo}</h3>
-                    <p className="text-gray-300 text-sm mb-6">{room.descripcion}</p>
+                  <div className="md:col-span-5">
+                    <p className="font-display text-6xl text-white/10">{String(idx + 1).padStart(2, "0")}</p>
+                    <p className="eyebrow mt-2">{ROOM_TYPE_LABELS[room.tipo] ?? room.tipo}</p>
+                    <h2 className="mt-4 text-4xl md:text-5xl">{room.titulo}</h2>
+                    <p className="mt-5 leading-relaxed text-sand-muted">{room.descripcion}</p>
 
-                    <button
-                      onClick={() => setHabitacionActiva(room)}
-                      className="w-full bg-amber-500/95 hover:bg-amber-500 text-gray-900 px-4 py-3 rounded-lg font-semibold transition"
-                    >
-                      Reservar Ahora
-                    </button>
+                    <ul className="mt-8 grid grid-cols-3 gap-4 border-y border-white/10 py-6">
+                      {(AMENITIES[room.tipo] ?? AMENITIES.suite).map((a) => (
+                        <li key={a.label} className="flex flex-col gap-2 text-xs text-sand-muted">
+                          <Icon name={a.icon} className="h-5 w-5 text-gold" />
+                          {a.label}
+                        </li>
+                      ))}
+                    </ul>
+
+                    <div className="mt-8 flex flex-wrap items-center justify-between gap-6">
+                      <p className="text-sm text-sand-muted">
+                        Desde <span className="font-display text-3xl text-white">{formatPrice(room.precio)}</span>
+                        <span className="ml-1">/ noche</span>
+                      </p>
+                      <button onClick={() => setHabitacionActiva(room)} className="btn-gold">
+                        Reservar ahora
+                      </button>
+                    </div>
                   </div>
-                </motion.article>
-              ))}
-            </div>
-          )}
-        </section>
+                </article>
+              </Reveal>
+            ))}
+          </div>
+        )}
       </main>
 
+      <Footer />
+
       <ReservaForm
+        key={habitacionActiva?.id ?? "none"}
         open={habitacionActiva !== null}
         onClose={() => setHabitacionActiva(null)}
         habitacion={habitacionActiva}
