@@ -6,10 +6,10 @@
 
 Next.js 16 · React 19 · TypeScript · Supabase · Tailwind CSS
 
-[**Ver demo**](https://hotel-booking-beta-three.vercel.app) · [Arquitectura](#arquitectura) · [Ejecutar en local](#ejecutar-en-local)
+[**Ver demo**](https://hotel-booking-gamma-red.vercel.app) · [Arquitectura](#arquitectura) · [Ejecutar en local](#ejecutar-en-local)
 
 [![CI](https://github.com/Dev-Sot/hotel-booking/actions/workflows/ci.yml/badge.svg)](https://github.com/Dev-Sot/hotel-booking/actions/workflows/ci.yml)
-[![Deploy](https://img.shields.io/badge/deploy-Vercel-000?logo=vercel)](https://hotel-booking-beta-three.vercel.app)
+[![Deploy](https://img.shields.io/badge/deploy-Vercel-000?logo=vercel)](https://hotel-booking-gamma-red.vercel.app)
 [![Next.js](https://img.shields.io/badge/Next.js-16-000?logo=nextdotjs)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Supabase](https://img.shields.io/badge/Supabase-Postgres%20%2B%20Auth-3ECF8E?logo=supabase&logoColor=white)](https://supabase.com/)
@@ -191,7 +191,7 @@ La app se despliega en **Vercel** con cada push a `main`. Variables necesarias e
 **Dev-Sot**. Desarrollador full-stack.
 
 - GitHub: [@Dev-Sot](https://github.com/Dev-Sot)
-- Demo: [hotel-booking-beta-three.vercel.app](https://hotel-booking-beta-three.vercel.app)
+- Demo: [hotel-booking-gamma-red.vercel.app](https://hotel-booking-gamma-red.vercel.app)
 
 ## Licencia
 
