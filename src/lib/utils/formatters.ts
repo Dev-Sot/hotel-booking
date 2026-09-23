@@ -5,11 +5,12 @@
 /**
  * Formatear precio con símbolo de moneda
  */
-export function formatPrice(price: number, currency: string = "COP"): string {
-  return new Intl.NumberFormat("es-CO", {
+export function formatPrice(price: number, currency: string = "USD"): string {
+  return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency,
-    minimumFractionDigits: 0,
+    currencyDisplay: "narrowSymbol",
+    maximumFractionDigits: 0,
   }).format(price);
 }
 

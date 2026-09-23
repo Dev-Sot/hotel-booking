@@ -10,9 +10,9 @@ export const ROOM_TYPES = {
 } as const;
 
 export const ROOM_TYPE_LABELS = {
-  [ROOM_TYPES.SUITE]: "Suite Presidencial",
-  [ROOM_TYPES.DOBLE]: "Doble Deluxe",
-  [ROOM_TYPES.SENCILLA]: "Sencilla Ejecutiva",
+  [ROOM_TYPES.SUITE]: "Suite",
+  [ROOM_TYPES.DOBLE]: "Habitación doble",
+  [ROOM_TYPES.SENCILLA]: "Habitación sencilla",
 } as const;
 
 // Estados de reserva

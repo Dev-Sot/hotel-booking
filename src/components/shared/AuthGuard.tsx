@@ -19,7 +19,13 @@ export default function AuthGuard({ children, redirectTo = "/login" }: AuthGuard
     }
   }, [loading, user, router, redirectTo]);
 
-  if (loading) return <div>Cargando...</div>;
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-ink" role="status" aria-label="Cargando">
+        <div className="h-10 w-10 animate-spin rounded-full border border-gold/30 border-t-gold" />
+      </div>
+    );
+  }
   if (!user) return null;
   return <>{children}</>;
 }

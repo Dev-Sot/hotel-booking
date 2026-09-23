@@ -30,7 +30,7 @@ describe("Modal", () => {
         <p>Contenido</p>
       </Modal>
     );
-    await userEvent.click(screen.getByText("×"));
+    await userEvent.click(screen.getByRole("button", { name: "Cerrar" }));
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 });

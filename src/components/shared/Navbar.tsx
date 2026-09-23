@@ -1,31 +1,56 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuthContext } from "@/context";
+import Icon from "@/components/ui/Icon";
+
+const LINKS = [
+  { href: "/", label: "Inicio" },
+  { href: "/habitaciones", label: "Habitaciones" },
+  { href: "/servicios", label: "Servicios" },
+  { href: "/reservas", label: "Reservas" },
+  { href: "/contacto", label: "Contacto" },
+];
+
+export function Logo({ className = "" }: { className?: string }) {
+  return (
+    <Link href="/" className={`group flex flex-col leading-none text-white ${className}`} aria-label="Hotel Booking, inicio">
+      <span className="font-display text-[22px] tracking-[0.02em]">
+        Hotel <span className="italic text-gold">Booking</span>
+      </span>
+      <span className="mt-1 text-[9px] uppercase tracking-[0.45em] text-sand-muted">
+        Luxury Collection
+      </span>
+    </Link>
+  );
+}
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
   const { user, loading, logout } = useAuthContext();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 40);
-    };
-    window.addEventListener("scroll", handleScroll);
+    const handleScroll = () => setScrolled(window.scrollY > 40);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const links = [
-    { href: "/", label: "Inicio" },
-    { href: "/habitaciones", label: "Habitaciones" },
-    { href: "/servicios", label: "Servicios" },
-    { href: "/reservas", label: "Reservas" },
-    { href: "/contacto", label: "Contacto" },
-  ];
+  useEffect(() => {
+    if (!menuOpen) return;
+    const handleClick = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [menuOpen]);
 
   const handleLogout = async () => {
     await logout();
@@ -33,202 +58,169 @@ export default function Navbar() {
     setMobileOpen(false);
   };
 
+  const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname?.startsWith(href));
+  const displayName = user?.nombre || user?.email?.split("@")[0] || "Mi cuenta";
+  const solid = scrolled || mobileOpen;
+
   return (
     <motion.nav
-      initial={{ y: -80 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        scrolled || mobileOpen ? "bg-black/85 backdrop-blur-md shadow-lg" : "bg-transparent"
+      initial={{ y: -24, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      className={`fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,padding] duration-500 ${
+        solid
+          ? "border-b border-white/[0.06] bg-ink/90 backdrop-blur-xl"
+          : "border-b border-transparent bg-gradient-to-b from-black/50 to-transparent"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center text-white">
-        {/* Logo elegante */}
-        <Link href="/" className="text-2xl font-semibold tracking-wide">
-          <span className="text-amber-500 font-serif">Hotel</span>{" "}
-          <span className="text-white font-light">Booking</span>
-        </Link>
+      <div
+        className={`container-site flex items-center justify-between transition-[height] duration-500 ${
+          scrolled ? "h-[72px]" : "h-[88px]"
+        }`}
+      >
+        <Logo />
 
-        {/* Links de navegación */}
-        <ul className="hidden md:flex gap-8 text-sm tracking-wider">
-          {links.map((link) => (
+        <ul className="hidden items-center gap-9 lg:flex">
+          {LINKS.map((link) => (
             <li key={link.href}>
               <Link
                 href={link.href}
-                className="relative transition-all duration-300 hover:text-amber-400"
+                aria-current={isActive(link.href) ? "page" : undefined}
+                className={`link-underline text-[12px] uppercase tracking-[0.2em] transition-colors duration-300 ${
+                  isActive(link.href) ? "text-gold" : "text-white/80 hover:text-white"
+                }`}
               >
                 {link.label}
-                <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-amber-500 transition-all duration-300 hover:w-full"></span>
               </Link>
             </li>
           ))}
         </ul>
 
-        {/* Auth Section (desktop) */}
-        <div className="ml-6 hidden md:flex items-center gap-4">
+        <div className="hidden items-center gap-6 lg:flex">
           {loading ? (
-            <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-amber-500"></div>
+            <div className="h-4 w-4 animate-spin rounded-full border border-gold/30 border-t-gold" />
           ) : user ? (
-            // Usuario autenticado
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="relative"
-            >
+            <div className="relative" ref={menuRef}>
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
                 aria-haspopup="true"
                 aria-expanded={menuOpen}
-                className="flex items-center gap-3 bg-amber-500/90 hover:bg-amber-500 text-gray-900 px-5 py-2.5 rounded-lg font-semibold transition shadow-lg border-2 border-amber-400"
+                className="flex items-center gap-2.5 text-[12px] uppercase tracking-[0.18em] text-white/85 transition hover:text-gold"
               >
-                <span className="text-xl" aria-hidden="true">👤</span>
-                <span className="text-sm font-bold truncate max-w-[150px]">
-                  {user.nombre || user.email?.split("@")[0] || "Usuario"}
+                <span className="flex h-8 w-8 items-center justify-center rounded-full border border-gold/50 text-gold">
+                  <Icon name="user" className="h-4 w-4" />
                 </span>
-                <span className="text-xs" aria-hidden="true">▼</span>
+                <span className="max-w-[140px] truncate normal-case tracking-normal text-sm">{displayName}</span>
+                <Icon name="chevronDown" className={`h-3.5 w-3.5 transition-transform ${menuOpen ? "rotate-180" : ""}`} />
               </button>
 
-              {/* Dropdown Menu */}
-              {menuOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="absolute top-full right-0 mt-2 bg-black/95 border border-amber-500/30 rounded-lg shadow-lg overflow-hidden min-w-[200px]"
-                >
-                  <div className="p-3 border-b border-amber-500/20">
-                    <p className="text-xs text-gray-400">Conectado como</p>
-                    <p className="text-sm text-white font-semibold truncate">
-                      {user.nombre || user.email}
-                    </p>
-                  </div>
-                  <Link
-                    href="/reservas"
-                    className="block px-4 py-2 text-sm text-gray-300 hover:bg-amber-500/20 hover:text-white transition"
+              <AnimatePresence>
+                {menuOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute right-0 top-full mt-4 w-64 border border-white/10 bg-ink-800/95 shadow-2xl shadow-black/60 backdrop-blur-xl"
                   >
-                     Mis Reservas
-                  </Link>
-                  <button
-                    onClick={handleLogout}
-                    className="w-full text-left px-4 py-2 text-sm text-red-300 hover:bg-red-500/20 hover:text-red-200 transition"
-                  >
-                    🚪 Cerrar Sesión
-                  </button>
-                </motion.div>
-              )}
-            </motion.div>
-          ) : (
-            // Sin autenticar: mostrar botón que abre un dropdown con opciones
-            <div className="relative">
-              <button
-                onClick={() => setMenuOpen(!menuOpen)}
-                aria-haspopup="true"
-                aria-expanded={menuOpen}
-                className="bg-amber-500/95 hover:bg-amber-500 text-gray-900 px-4 py-2 rounded-lg font-medium transition transform hover:scale-105"
-              >
-                Iniciar sesión
-              </button>
-
-              {menuOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: -6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="absolute top-full right-0 mt-2 w-72 bg-white text-black rounded-lg shadow-lg overflow-hidden border"
-                >
-                  <div className="p-4">
-                    <button
-                      onClick={() => {
-                        setMenuOpen(false);
-                        window.location.href = "/login";
-                      }}
-                      className="w-full text-left px-4 py-3 mb-2 bg-sky-50 hover:bg-sky-100 rounded-md"
-                    >
-                      Iniciar sesión
-                    </button>
-
-                    <div className="mt-2 border-t pt-2">
-                      <Link
-                        href="/reservas"
-                        onClick={() => setMenuOpen(false)}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md"
-                      >
-                        Mis reservas
-                      </Link>
-                      <Link
-                        href="/contacto"
-                        onClick={() => setMenuOpen(false)}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md"
-                      >
-                        Asistencia y ayuda
-                      </Link>
+                    <div className="border-b border-white/[0.06] px-5 py-4">
+                      <p className="text-[10px] uppercase tracking-[0.2em] text-sand-dim">Conectado como</p>
+                      <p className="mt-1 truncate text-sm text-white">{user.nombre || user.email}</p>
                     </div>
-                  </div>
-                </motion.div>
-              )}
+                    <Link
+                      href="/reservas"
+                      onClick={() => setMenuOpen(false)}
+                      className="block px-5 py-3 text-sm text-sand transition hover:bg-white/[0.04] hover:text-gold"
+                    >
+                      Mis reservas
+                    </Link>
+                    <Link
+                      href="/admin"
+                      onClick={() => setMenuOpen(false)}
+                      className="block px-5 py-3 text-sm text-sand transition hover:bg-white/[0.04] hover:text-gold"
+                    >
+                      Panel de administración
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="flex w-full items-center gap-2 border-t border-white/[0.06] px-5 py-3 text-left text-sm text-sand-muted transition hover:bg-white/[0.04] hover:text-white"
+                    >
+                      <Icon name="logout" className="h-4 w-4" />
+                      Cerrar sesión
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
+          ) : (
+            <Link
+              href="/login"
+              className="text-[12px] uppercase tracking-[0.2em] text-white/80 transition hover:text-gold"
+            >
+              Iniciar sesión
+            </Link>
           )}
+
+          <Link href="/habitaciones" className="btn-gold !px-6 !py-3">
+            Reservar
+          </Link>
         </div>
 
-        {/* Botón de menú móvil */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label={mobileOpen ? "Cerrar menú" : "Abrir menú"}
           aria-expanded={mobileOpen}
-          className="md:hidden flex flex-col justify-center items-center gap-1.5 w-10 h-10"
+          className="flex h-10 w-10 flex-col items-center justify-center gap-[6px] lg:hidden"
         >
-          <span
-            className={`block h-0.5 w-6 bg-white transition-transform ${mobileOpen ? "translate-y-2 rotate-45" : ""}`}
-          />
-          <span className={`block h-0.5 w-6 bg-white transition-opacity ${mobileOpen ? "opacity-0" : ""}`} />
-          <span
-            className={`block h-0.5 w-6 bg-white transition-transform ${mobileOpen ? "-translate-y-2 -rotate-45" : ""}`}
-          />
+          <span className={`block h-px w-6 bg-white transition-transform duration-300 ${mobileOpen ? "translate-y-[7px] rotate-45" : ""}`} />
+          <span className={`block h-px w-6 bg-white transition-opacity duration-300 ${mobileOpen ? "opacity-0" : ""}`} />
+          <span className={`block h-px w-6 bg-white transition-transform duration-300 ${mobileOpen ? "-translate-y-[7px] -rotate-45" : ""}`} />
         </button>
       </div>
 
-      {/* Panel de navegación móvil */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden overflow-hidden bg-black/95 border-t border-white/10"
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            className="overflow-hidden border-t border-white/[0.06] bg-ink lg:hidden"
           >
-            <ul className="px-6 py-4 space-y-3 text-white">
-              {links.map((link) => (
-                <li key={link.href}>
+            <ul className="container-site py-6">
+              {LINKS.map((link) => (
+                <li key={link.href} className="border-b border-white/[0.05]">
                   <Link
                     href={link.href}
                     onClick={() => setMobileOpen(false)}
-                    className="block py-1 hover:text-amber-400 transition"
+                    className={`flex items-center justify-between py-4 font-display text-2xl ${
+                      isActive(link.href) ? "text-gold" : "text-white"
+                    }`}
                   >
                     {link.label}
+                    <Icon name="arrow" className="h-4 w-4 text-sand-dim" />
                   </Link>
                 </li>
               ))}
             </ul>
-            <div className="px-6 pb-6 border-t border-white/10 pt-4">
+            <div className="container-site space-y-3 pb-8">
               {user ? (
-                <div className="space-y-3">
-                  <p className="text-xs text-gray-400">
+                <>
+                  <p className="text-xs text-sand-muted">
                     Conectado como <span className="text-white">{user.nombre || user.email}</span>
                   </p>
-                  <button
-                    onClick={handleLogout}
-                    className="w-full text-left px-4 py-2 text-sm rounded-md bg-red-600/20 text-red-300"
-                  >
-                    Cerrar Sesión
+                  <button onClick={handleLogout} className="btn-outline w-full">
+                    Cerrar sesión
                   </button>
-                </div>
+                </>
               ) : (
-                <Link
-                  href="/login"
-                  onClick={() => setMobileOpen(false)}
-                  className="block w-full text-center bg-amber-500 hover:bg-amber-600 text-gray-900 px-4 py-2 rounded-lg font-medium transition"
-                >
+                <Link href="/login" onClick={() => setMobileOpen(false)} className="btn-outline w-full">
                   Iniciar sesión
                 </Link>
               )}
+              <Link href="/habitaciones" onClick={() => setMobileOpen(false)} className="btn-gold w-full">
+                Reservar estancia
+              </Link>
             </div>
           </motion.div>
         )}

@@ -1,27 +1,42 @@
 import "./globals.css";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import { AuthProvider, ReservaProvider } from "@/context";
+import { SITE_URL } from "@/lib/utils/siteUrl";
 
 const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-sans",
   display: "swap",
 });
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
-  variable: "--font-playfair",
+  weight: ["400", "500", "600"],
+  style: ["normal", "italic"],
+  variable: "--font-display",
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Hotel Colina Campestre",
-  description:
-    "Reserva tu experiencia de lujo en Hotel Booking: suites exclusivas, atención personalizada y confort de clase mundial.",
-  icons: {
-    icon: "/favicon.ico",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Hotel Booking — Estancias de lujo",
+    template: "%s — Hotel Booking",
   },
+  description:
+    "Suites exclusivas, gastronomía de autor y atención personalizada. Reserva directamente con disponibilidad en tiempo real.",
+  icons: { icon: "/favicon.ico" },
+  openGraph: {
+    type: "website",
+    locale: "es_CO",
+    siteName: "Hotel Booking",
+    images: ["/habitacion1.jpg"],
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0a0908",
 };
 
 export default function RootLayout({
@@ -31,12 +46,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" className={`${inter.variable} ${playfair.variable}`}>
-      <body className="bg-[#0b0b0b] text-white relative">
-        {/* Fondo decorativo con brillo dorado sutil */}
-        <div className="pointer-events-none fixed inset-0 bg-gradient-to-br from-[#1a1a1a] via-[#0b0b0b] to-[#000] opacity-95 -z-10" />
-        <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_30%_10%,rgba(198,169,114,0.05),transparent_60%)] -z-10" />
-
-        {/* Contenido principal */}
+      <body>
         <AuthProvider>
           <ReservaProvider>{children}</ReservaProvider>
         </AuthProvider>

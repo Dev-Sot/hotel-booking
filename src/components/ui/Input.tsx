@@ -15,7 +15,7 @@ export default function Input({
   return (
     <div>
       {label && (
-        <label htmlFor={generatedId} className="block font-medium mb-1">
+        <label htmlFor={generatedId} className="field-label">
           {label}
         </label>
       )}
@@ -26,11 +26,7 @@ export default function Input({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className={`
-          w-full border border-gray-300 rounded-lg p-2
-          focus:outline-none focus:ring-2 focus:ring-amber-500
-          ${className}
-        `}
+        className={`field ${className}`}
       />
     </div>
   );
