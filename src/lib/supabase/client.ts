@@ -16,5 +16,6 @@ export function createClient() {
     );
   }
 
-  return createBrowserClient(supabaseUrl ?? "http://localhost:54321", supabaseAnonKey ?? "public-anon-key");
+  // `||` y no `??`: en Vercel una variable puede existir con valor vacío.
+  return createBrowserClient(supabaseUrl || "http://localhost:54321", supabaseAnonKey || "public-anon-key");
 }

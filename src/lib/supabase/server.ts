@@ -9,7 +9,7 @@ import { isSupabaseConfigured, supabaseAnonKey, supabaseUrl } from "./config";
 export async function createSupabaseServerClient() {
   const cookieStore = await cookies();
 
-  return createServerClient(supabaseUrl ?? "http://localhost:54321", supabaseAnonKey ?? "public-anon-key", {
+  return createServerClient(supabaseUrl || "http://localhost:54321", supabaseAnonKey || "public-anon-key", {
     cookies: {
       getAll() {
         return cookieStore.getAll();
